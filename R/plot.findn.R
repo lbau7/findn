@@ -1,0 +1,60 @@
+#' Plot of a findn Object
+#'
+#' @param x object of class \code{findn}.
+#' @param min_n lower limit of the x-axis.
+#' @param max_n upper limit of the x-axis. The default is \code{NULL}.
+#' @param power_lim if \code{max_n} is \code{NULL} then the upper limit of the x-axis is the 
+#' smallest sample size for which the lower limit of the \code{level} percent confidence interval
+#' for the predicted power exceeds the value of \code{power_lim}. The default is 0.95.
+#'
+#' @return None.
+#' @export
+#'
+#' @examples
+#' # Function that simulates the outcomes of a two-sample t-test
+#' ttest <- function(mu1 = 0, mu2 = 1, sd, n, k) {
+#'   sample1 <- matrix(rnorm(n = ceiling(n) * k, mean = mu1, sd = sd),
+#'     ncol = k)
+#'   mean1 <- apply(sample1, 2, mean)
+#'   sd1_hat <- apply(sample1, 2, sd)
+#'   sample2 <- matrix(rnorm(n = ceiling(n) * k, mean = mu2, sd = sd),
+#'     ncol = k)
+#'   mean2 <- apply(sample2, 2, mean)
+#'   sd2_hat <- apply(sample2, 2, sd)
+#'   sd_hat <- sqrt((sd1_hat^2 + sd2_hat^2) / 2)
+#'   teststatistic <- (mean1 - mean2) / (sd_hat * sqrt(2 / n))
+#'   crit <- qt(1 - 0.025, 2*n - 2)
+#'   return(mean(teststatistic < -crit))
+#' }
+#' 
+#' # Create a findn object
+#' res.ttest <- findn(fun = ttest, targ = 0.8, k = 25, start = 100, 
+#'   initevals = 100, r = 4, stop = "evals", maxevals = 2000, 
+#'   level = 0.05, var_alpha = 0.05, var_beta = 1, alpha = 0.025, 
+#'   alternative = "one.sided", sd = 2, verbose = FALSE)
+#'
+#' # plot with default settings
+#' plot(res.ttest, power_lim = 0.95)
+plot.findn <- function(x, min_n = 1, max_n = NULL, power_lim = 0.95) {
+  if(is.null(max_n)) max_n <- min(3 * x$sample_size, 10000)
+  data <- get_details(x, max_n = max_n)
+
+  if(is.null(max_n)) {
+    if(length(which(data$Lower.CL > power_lim)) == 0)
+      max_n <- 10000
+    data <- get_details(x, max_n = max_n)
+  }
+  
+  max_rows <- ifelse(length(which(data$Lower.CL > power_lim)) > 0,
+    min(which(data$Lower.CL > power_lim)), max_n)
+  
+  data <- data[min_n:max_rows, ]
+  data$Rating <- factor(data$Rating, levels = c("Too Low", "Uncertain", "Sufficient"))
+  
+  ggplot2::ggplot(data, ggplot2::aes(x = n)) +
+    ggplot2::geom_line(ggplot2::aes(y = Est.Power)) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = Lower.CL, ymax = Upper.CL, fill = Rating), 
+      alpha = 0.3) +
+    ggplot2::ylab("Estimated Power") +
+    ggplot2::theme_bw()
+}
