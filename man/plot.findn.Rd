@@ -4,7 +4,7 @@
 \alias{plot.findn}
 \title{Plot of a findn Object}
 \usage{
-\method{plot}{findn}(x, min_n = 1, max_n = NULL, power_lim = 0.95)
+\method{plot}{findn}(x, min_n = 1, max_n = NULL, power_lim = 0.95, ...)
 }
 \arguments{
 \item{x}{object of class \code{findn}.}
@@ -16,6 +16,8 @@
 \item{power_lim}{if \code{max_n} is \code{NULL} then the upper limit of the x-axis is the 
 smallest sample size for which the lower limit of the \code{level} percent confidence interval
 for the predicted power exceeds the value of \code{power_lim}. The default is 0.95.}
+
+\item{...}{Further arguments.}
 }
 \value{
 None.

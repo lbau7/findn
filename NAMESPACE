@@ -3,3 +3,4 @@
 S3method(plot,findn)
 S3method(print,findn)
 export(findn)
+importFrom(rlang,.data)

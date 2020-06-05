@@ -4,12 +4,27 @@
 \alias{findn}
 \title{findn}
 \usage{
-findn(fun, targ, start, k = 25, initevals = 100, r = 4,
-  stop = c("evals", "power.ci", "abs.unc", "rel.unc"), maxevals = 2000,
-  level = 0.05, power.ci.tol = 0.02, abs.unc.tol = 10,
-  rel.unc.tol = 0.1, var_alpha = 0.05, var_beta = 1, alpha = 0.05,
-  alternative = c("two.sided", "one.sided"), minx = 2,
-  verbose = FALSE, ...)
+findn(
+  fun,
+  targ,
+  start,
+  k = 25,
+  initevals = 100,
+  r = 4,
+  stop = c("evals", "power.ci", "abs.unc", "rel.unc"),
+  maxevals = 2000,
+  level = 0.05,
+  power.ci.tol = 0.02,
+  abs.unc.tol = 10,
+  rel.unc.tol = 0.1,
+  var_alpha = 0.05,
+  var_beta = 1,
+  alpha = 0.05,
+  alternative = c("two.sided", "one.sided"),
+  minx = 2,
+  verbose = FALSE,
+  ...
+)
 }
 \arguments{
 \item{fun}{The target function that estimates the power of a trial for a sample size of 

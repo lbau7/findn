@@ -6,8 +6,10 @@
 #' @param power_lim if \code{max_n} is \code{NULL} then the upper limit of the x-axis is the 
 #' smallest sample size for which the lower limit of the \code{level} percent confidence interval
 #' for the predicted power exceeds the value of \code{power_lim}. The default is 0.95.
+#' @param ... Further arguments.
 #'
 #' @return None.
+#' @importFrom rlang .data
 #' @export
 #'
 #' @examples
@@ -35,7 +37,7 @@
 #'
 #' # plot with default settings
 #' plot(res.ttest, power_lim = 0.95)
-plot.findn <- function(x, min_n = 1, max_n = NULL, power_lim = 0.95) {
+plot.findn <- function(x, min_n = 1, max_n = NULL, power_lim = 0.95, ...) {
   if(is.null(max_n)) max_n <- min(3 * x$sample_size, 10000)
   data <- get_details(x, max_n = max_n)
 
@@ -51,9 +53,10 @@ plot.findn <- function(x, min_n = 1, max_n = NULL, power_lim = 0.95) {
   data <- data[min_n:max_rows, ]
   data$Rating <- factor(data$Rating, levels = c("Too Low", "Uncertain", "Sufficient"))
   
-  ggplot2::ggplot(data, ggplot2::aes(x = n)) +
-    ggplot2::geom_line(ggplot2::aes(y = Est.Power)) +
-    ggplot2::geom_ribbon(ggplot2::aes(ymin = Lower.CL, ymax = Upper.CL, fill = Rating), 
+  ggplot2::ggplot(data, ggplot2::aes(x = .data$n)) +
+    ggplot2::geom_line(ggplot2::aes(y = .data$Est.Power)) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = .data$Lower.CL, 
+      ymax = .data$Upper.CL, fill = .data$Rating), 
       alpha = 0.3) +
     ggplot2::ylab("Estimated Power") +
     ggplot2::theme_bw()

@@ -1,147 +1,3 @@
-logPost <- function(par, suc, fail, n, w,
-                    mu_alpha, sd_alpha, mu_logbeta, sd_logbeta) {
-  alpha <- par[1]
-  beta <- par[2]
-  p_est <- pnorm(alpha + beta * sqrt(n))
-  loglik <- sum(w * dbinom(suc, suc + fail, p_est, log = TRUE))
-  logprior <- dnorm(alpha, mu_alpha, sd_alpha, log = TRUE)
-  logprior <- logprior + dlnorm(beta, mu_logbeta, sd_logbeta, log = TRUE)
-  - loglik - logprior
-}
-
-
-fitMod <- function(x, y, k, weights, start_par,
-                   mu_alpha, sd_alpha, mu_logbeta, sd_logbeta) {
-  suc <- y * k
-  fail <- (1 - y) * k
-
-  opt <- optim(
-    start_par, logPost, suc = suc, fail = fail, n = x, w = weights,
-    mu_alpha = mu_alpha, sd_alpha = sd_alpha,
-    mu_logbeta = mu_logbeta, sd_logbeta = sd_logbeta
-    )
-
-  cf <- opt$par
-  vcov <- try(solve(optimHess(
-    cf, logPost, suc=suc, fail=fail, n=x, w=weights, mu_alpha=mu_alpha,
-    sd_alpha=sd_alpha, mu_logbeta=mu_logbeta, sd_logbeta=sd_logbeta
-    )))
-
-  list(cf = cf, vcov = vcov)
-}
-
-predict_fit <- function(fit, new_n, se) {
-  X <- cbind(1, sqrt(new_n))
-  pred <- X %*% fit$cf
-
-  if(se == TRUE) {
-    if(is.matrix(fit$vcov)) {
-      se <- sqrt(diag(X %*% fit$vcov %*% t(X)))
-    } else {
-      se <- 0.5
-    }
-    data.frame(pred = pred, se = se)
-  } else {
-    pred
-  }
-}
-
-wgts <- function (typred, ttarg) {
-  dists <- abs(typred - ttarg)
-  if (sum(dists < 1 & dists > 1e-04) < 3) {
-    return(rep(1, length(typred)))
-  }
-  (1 - dists^3)^3 * (dists < 1)
-}
-
-stop_power <- function (tol, fit, xest, targ, level) {
-  if (!is.matrix(fit$vcov)) {
-   return(list(stop = FALSE))
-  } else {
-    pred <- predict_fit(fit, xest, se = TRUE)
-    crit <- qnorm(1 - level / 2)
-    cond1 <- pred$pred[1] + crit * pred$se[1] < qnorm(targ + tol)
-    cond2 <- pred$pred[1] - crit * pred$se[1] > qnorm(targ - tol)
-    return(list(stop = cond1 & cond2))
-  }
-}
-
-stop_uncertainty <- function(tol, fit, xest, targ, level, type) {
-  if (!is.matrix(fit$vcov)) {
-    return(list(stop = FALSE))
-  } else {
-    x <- 1:(3*xest)
-    pred <- predict_fit(fit, x, se = TRUE)
-    crit <- qnorm(1 - level / 2)
-    pred.lowercl <- pnorm(pred$pred - crit * pred$se)
-    pred.uppercl <- pnorm(pred$pred + crit * pred$se)
-    x.unc <- x[which(pred.uppercl > 0.8 & pred.lowercl < 0.8)]
-
-    if (type == "absolute") {
-      cond <- length(x.unc) < tol
-    } else if (type == "relative") {
-      rel.unc <- (x.unc[length(x.unc)] - x.unc[1]) / x.unc[1]
-      cond <- rel.unc < tol
-    }
-    return(list(stop = cond))
-  }
-}
-
-print_verbose <- function(fit, xest, level) {
-  if(is.matrix(fit$vcov)) {
-    pred <- predict_fit(fit, ceiling(xest), se = TRUE)
-    crit <- qnorm(1 - level / 2)
-    cat(
-      "n_Estimate: ", ceiling(xest), " ",
-      "Predicted Power: ", round(pnorm(pred$pred), 3), " ",
-      "[", round(pnorm(pred$pred - crit * pred$se), 3), 
-      "; ",
-      round(pnorm(pred$pred + crit * pred$se), 3), "]",
-      "\n", sep =""
-    )
-  } else {
-    pred <- predit_fit(fit, ceiling(xest), se = FALSE)
-    cat(
-      "n_Estimate", ceiling(xest),
-      "Predicted Power:", round(pnorm(pred$pred), 3)
-    )
-  }
-}
-        
-get_init_par <- function(x, y, k, alpha) {
-  ymat <- cbind(y * k, (1 - y) * k)
-  off.par <- rep(qnorm(alpha), length(x))
-  init.mod <- glm(
-    ymat ~ -1 + sqrt(x) + offset(off.par),
-    family = binomial("probit")
-    )
-  beta <- ifelse(coef(init.mod) < 0, 0.1, coef(init.mod))
-  c(qnorm(alpha), beta)
-}
-
-get_par_logbeta <- function(n, alpha, targ, var_beta) {
-  mu_beta <- (qnorm(targ) - qnorm(alpha)) / sqrt(n)
-  mu_logbeta <- log(mu_beta^2 / sqrt(var_beta + mu_beta^2))
-  sd_logbeta <- sqrt(log(var_beta / mu_beta^2 + 1))
-  par_logbeta <- c(mu_logbeta, sd_logbeta)
-  par_logbeta
-}
-
-get_est <- function(fit, ttarg) {
-  cf <- fit$cf
-  (as.numeric(ttarg - cf[1]) / cf[2])^2
-}
-
-get_new_points <- function(fit, xest, targ, interval) {
-  pred <- predict_fit(fit, xest, se=T)
-  cf <- fit$cf
-
-  xLB <- floor(((pred$pred - pred$se - cf[1]) / cf[2])^2)
-  xUB <- ceiling(((pred$pred + pred$se - cf[1]) / cf[2])^2)
-
-  c(xLB, xUB)
-}
-
 #' findn
 #'
 #' findn estimates the sample size for a certain target function based on repeated simulations using a model
@@ -246,7 +102,7 @@ findn <- function (fun, targ, start, k = 25, initevals = 100, r = 4,
     length.out = startno)), minx)
   x <- pmax(startvals, minx)
   y <- sapply(x[1:startno], function(x) func(x))
-  ttarg <- qnorm(targ)
+  ttarg <- stats::qnorm(targ)
   ycur <- y[1:startno]
   xcur <- x[1:startno]
   init_par <- get_init_par(x = xcur, y = ycur, k = k, alpha = alpha)
@@ -256,7 +112,7 @@ findn <- function (fun, targ, start, k = 25, initevals = 100, r = 4,
 
   fit <- fitMod(
     x = xcur, y = ycur, k = k, weights = rep(1, length(xcur)),
-    start_par = init_par, mu_alpha = qnorm(alpha), sd_alpha = sqrt(var_alpha),
+    start_par = init_par, mu_alpha = stats::qnorm(alpha), sd_alpha = sqrt(var_alpha),
     mu_logbeta = par_logbeta[1], sd_logbeta = par_logbeta[2]
     )
 
@@ -279,7 +135,7 @@ findn <- function (fun, targ, start, k = 25, initevals = 100, r = 4,
       weights <- wgts(typred = tycurpred, ttarg = ttarg)
       fit <- fitMod(
         x = xcur, y = ycur, k = k, weights = weights, start_par = fit$cf,
-        mu_alpha = qnorm(alpha), sd_alpha = sqrt(var_alpha),
+        mu_alpha = stats::qnorm(alpha), sd_alpha = sqrt(var_alpha),
         mu_logbeta = par_logbeta[1], sd_logbeta = par_logbeta[2]
         )
       xest[i] <- get_est(fit, ttarg)
@@ -310,7 +166,7 @@ findn <- function (fun, targ, start, k = 25, initevals = 100, r = 4,
         if (stp$stop) break
       }
 
-      new_x <- pmax(get_new_points(fit, xest[i], targ, interval), minx)
+      new_x <- pmax(get_new_points(fit, xest[i], targ), minx)
     }
     new_y <- sapply(new_x, function(x) func(x))
     ind <- (count + 1):(count + 2)
@@ -326,7 +182,7 @@ findn <- function (fun, targ, start, k = 25, initevals = 100, r = 4,
       weights <- wgts(typred = tycurpred, ttarg = ttarg)
       fit <- fitMod(
         x = xcur, y = ycur, k = k, weights = weights, start_par = fit$cf,
-        mu_alpha = qnorm(alpha), sd_alpha = sqrt(var_alpha),
+        mu_alpha = stats::qnorm(alpha), sd_alpha = sqrt(var_alpha),
         mu_logbeta = par_logbeta[1], sd_logbeta = par_logbeta[2]
       )
       xest[i+1] <- get_est(fit, ttarg)

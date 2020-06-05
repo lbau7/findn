@@ -1,60 +1,3 @@
-get_details <- function(out, details = c("high", "low"), max_n = NULL) {
-  details <- match.arg(details)
-  if (!is.matrix(out$fit$vcov)) {
-    if(is.null(max_n)) {
-      x <- 1:(5 * out$sample_size)
-    } else {
-      x <- 1:max_n
-    }
-    pred <- pnorm(predict_fit(out$fit, x, se = FALSE))
-    print.df <- data.frame("n" = x, "Est.Power" = pred)
-    if(is.null(max_n)) {
-      print.df <- with(print.df,
-        print.df[which(Est.Power > (out$targ - 0.02) & Est.Power < (out$targ + 0.02)), ]
-      )
-    }
-  } else {
-    if(is.null(max_n)) {
-      x <- 1:(5 * out$sample_size)
-    } else {
-      x <- 1:max_n
-    }
-    pred <- predict_fit(out$fit, x, se = TRUE)
-    crit <- qnorm(1 - out$level / 2)
-    pred.lowercl <- pnorm(pred$pred - crit * pred$se)
-    pred.uppercl <- pnorm(pred$pred + crit * pred$se)
-
-    rating <- ifelse(pred.uppercl < out$targ, "Too Low",
-      ifelse(pred.lowercl > out$targ, "Sufficient", "Uncertain"))
-
-    if(details == "low") {
-      print.df <- x[min(which(rating == "Sufficient"))]
-    } else {
-      print.df <- data.frame(
-        "n" = x,
-        "Est.Power" = pnorm(pred$pred),
-        "Lower CL" = pred.lowercl,
-        "Upper CL" = pred.uppercl,
-        "Rating" = rating
-      )
-
-      if(is.null(max_n)) {
-        if (length(print.df$Rating == "Uncertain") > 0) {
-          lower.unc <- min(which(print.df$Rating == "Uncertain"))
-          upper.unc <- max(which(print.df$Rating == "Uncertain"))
-          print.df <- print.df[(lower.unc - 3):(upper.unc + 3), ]
-        } else {
-          lower.suf <- min(which(print.df$Rating == "Sufficient"))
-          print.df <- print.df[(lower.suf - 3):(lower.suf + 2), ]
-        }
-      }
-    }
-  }
-  print.df
-}
-
-
-
 #' Printing a findn Object
 #' 
 #' Displays details about a sample size estimation from a \code{findn} object.
@@ -65,6 +8,7 @@ get_details <- function(out, details = c("high", "low"), max_n = NULL) {
 #' are shown for all sample sizes from 1 to \code{max_n} if \code{max_n} is non-\code{NULL}. 
 #' See also 'Details'.
 #' @param digits Number of decimal places to be shown.
+#' @param ... Further arguments.
 #'
 #' @details When \code{details = "low"}, only the point estimate (i.e., the smallest sample 
 #' for which the predicted power exceeds the target power), the "minimum sufficient sample 
@@ -107,7 +51,7 @@ get_details <- function(out, details = c("high", "low"), max_n = NULL) {
 #'
 #' # print with default settings
 #' print(res.ttest, details = "low", digits = 3)
-print.findn <- function(x, details = c("low", "high"), max_n = NULL, digits = 3) {
+print.findn <- function(x, details = c("low", "high"), max_n = NULL, digits = 3, ...) {
   details <- match.arg(details)
   detail.df <- get_details(x, details, max_n)
 
@@ -124,5 +68,5 @@ print.findn <- function(x, details = c("low", "high"), max_n = NULL, digits = 3)
       Message = x$exit.mes
     )
   }
-  print(x_list)
+  print(x_list, ...)
 }
