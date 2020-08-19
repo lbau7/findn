@@ -21,7 +21,7 @@ findn(
   var_beta = 1,
   alpha = 0.05,
   alternative = c("two.sided", "one.sided"),
-  minx = 2,
+  min_x = 2,
   verbose = FALSE,
   ...
 )
@@ -63,9 +63,10 @@ for the confidence intervals that are printed if \code{verbose = TRUE}.}
 \item{alpha}{The significance level of the underlying test. This is used to 
 compute the mean of the prior distribution of the intercept.}
 
-\item{alternative}{Either "two.sided" or "one.sided".}
+\item{alternative}{Either "two.sided" or "one.sided". This is only used to
+determine the mean of the intercept prior.}
 
-\item{minx}{The minimum sample size that \code{fun} can be evaluated for.}
+\item{min_x}{The minimum sample size that \code{fun} can be evaluated for.}
 
 \item{verbose}{If \code{TRUE}, the current sample size estimate, the 
 predicted power and its \code{level} percent confidence is returned after

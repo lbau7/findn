@@ -23,8 +23,9 @@
 #' @param var_beta Variance of the prior distribution for the slope.
 #' @param alpha The significance level of the underlying test. This is used to 
 #'   compute the mean of the prior distribution of the intercept.
-#' @param alternative Either "two.sided" or "one.sided".
-#' @param minx The minimum sample size that \code{fun} can be evaluated for.
+#' @param alternative Either "two.sided" or "one.sided". This is only used to
+#'   determine the mean of the intercept prior.
+#' @param min_x The minimum sample size that \code{fun} can be evaluated for.
 #' @param verbose If \code{TRUE}, the current sample size estimate, the 
 #'   predicted power and its \code{level} percent confidence is returned after
 #'   every iteration.
@@ -94,7 +95,7 @@ findn <- function(fun, targ, start, k = 25, init_evals = 100, r = 4,
                   power_ci_tol = 0.02, abs_unc_tol = 10, rel_unc_tol = 0.1,
                   var_alpha = 0.05, var_beta = 1,
                   alpha = 0.05, alternative = c("two.sided", "one.sided"),
-                  minx = 2, verbose = FALSE, ...) {
+                  min_x = 2, verbose = FALSE, ...) {
   x <- y <- xest <- numeric()
   stop <- match.arg(stop)
   alternative <- match.arg(alternative)
@@ -109,8 +110,8 @@ findn <- function(fun, targ, start, k = 25, init_evals = 100, r = 4,
   }
   func <- function(x) fun(n = x, k = k, ...)
   start_vals <- pmax(round(start * seq(from = 1 / r, to = r,
-    length.out = start_no)), minx)
-  x <- pmax(start_vals, minx)
+    length.out = start_no)), min_x)
+  x <- pmax(start_vals, min_x)
   y <- sapply(x[1:start_no], function(x) func(x))
   ttarg <- stats::qnorm(targ)
   ycur <- y[1:start_no]
@@ -127,7 +128,7 @@ findn <- function(fun, targ, start, k = 25, init_evals = 100, r = 4,
     )
 
   xest[1] <- ceiling(get_est(fit = fit, ttarg = ttarg))
-  x[start_no + 1] <- pmax(xest[1], minx)
+  x[start_no + 1] <- pmax(xest[1], min_x)
   y[start_no + 1] <- func(x[start_no + 1])
   count <- start_no + 1
 
@@ -176,7 +177,7 @@ findn <- function(fun, targ, start, k = 25, init_evals = 100, r = 4,
         if (stp$stop) break
       }
 
-      new_x <- pmax(get_new_points(fit, xest[i], targ), minx)
+      new_x <- pmax(get_new_points(fit, xest[i], targ), min_x)
     }
     new_y <- sapply(new_x, function(x) func(x))
     ind <- (count + 1):(count + 2)
