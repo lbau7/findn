@@ -99,10 +99,13 @@ findn <- function(fun, targ, start, k = 25, init_evals = 100, r = 4,
   alternative <- match.arg(alternative)
   alpha <- ifelse(alternative == "two.sided", alpha / 2, alpha)
   start_no <- round((init_evals - k) / k)
+  if (start_no == 0) {
+    stop("init_evals is too small, either decrease k or increase init_evals")
+  }
   maxiter <- floor((max_evals / k - (start_no + 1)) / 2)
-
-  if (maxiter < 1) stop("max_evals is too little")
-
+  if (maxiter < 1) {
+    stop("max_evals is too small")
+  }
   func <- function(x) fun(n = x, k = k, ...)
   start_vals <- pmax(round(start * seq(from = 1 / r, to = r,
     length.out = start_no)), minx)
