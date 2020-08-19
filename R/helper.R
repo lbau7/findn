@@ -1,4 +1,60 @@
-logPost <- function(par, suc, fail, n, w,
+# Helper function for findn_maruo
+get_par_maruo <- function(x, y, k) {
+  y_mat <- cbind(y, 1 - y) * k
+  mod <- stats::glm(y_mat ~ sqrt(x), family = stats::binomial(link = "probit"))
+  cf <- stats::coef(mod)
+  return(cf)
+}
+
+# Helper functions for findn_3pod
+transf_y <- function(x) {
+  if (x == 0) {
+    stats::qnorm(0.001) 
+  } else if (x == 1) {
+    stats::qnorm(0.999) 
+  } else {
+    stats::qnorm(x)
+  }
+}
+
+fit_mod_3pod <- function (x, y, k) {
+  ymat <- cbind(y, 1 - y) * k
+  fit <- stats::glm(ymat ~ x, family = stats::binomial("probit"))
+  if(stats::coef(fit)[2] < 0.0001) {
+    fit <- stats::glm(ymat ~ x - 1 + offset(rep(qnorm(0.025), length(x))),
+      family = stats::binomial("probit"))
+  }
+  return(fit)
+}
+
+fit_mod_final_3pod <- function (x, y, k) {
+  ymat <- cbind(y, 1 - y) * k
+  fit <- stats::glm(ymat ~ x, family = stats::binomial("probit"))
+  return(fit)
+}
+
+get_new_points_3pod <- function(fit) {
+  cf <- stats::coef(fit)
+  if (length(cf) == 1) cf <- c(stats::qnorm(0.025), cf)
+  xLB <- floor((stats::qnorm(0.128) - cf[1]) / cf[2])
+  xUB <- ceiling((stats::qnorm(0.872) - cf[1]) / cf[2])
+  c(xLB, xUB)
+}
+
+get_final_point_3pod <- function(fit, ttarg) {
+  cf <- stats::coef(fit)
+  round((ttarg - cf[1]) / cf[2])
+}
+
+# Helper function for findn_rm
+get_b <- function(x, y) {
+  rm.fit <- stats::lm(y ~ x)
+  b <- stats::coef(rm.fit)[2]
+  ifelse(b < 0.0001, 0.0001, b)
+}
+
+# Helper functions for findn
+log_post <- function(par, suc, fail, n, w,
   mu_alpha, sd_alpha, mu_logbeta, sd_logbeta) {
   alpha <- par[1]
   beta <- par[2]
@@ -9,21 +65,20 @@ logPost <- function(par, suc, fail, n, w,
   - loglik - logprior
 }
 
-
-fitMod <- function(x, y, k, weights, start_par,
+fit_mod <- function(x, y, k, weights, start_par,
   mu_alpha, sd_alpha, mu_logbeta, sd_logbeta) {
   suc <- y * k
   fail <- (1 - y) * k
   
   opt <- stats::optim(
-    start_par, logPost, suc = suc, fail = fail, n = x, w = weights,
+    start_par, log_post, suc = suc, fail = fail, n = x, w = weights,
     mu_alpha = mu_alpha, sd_alpha = sd_alpha,
     mu_logbeta = mu_logbeta, sd_logbeta = sd_logbeta
   )
   
   cf <- opt$par
   vcov <- try(solve(stats::optimHess(
-    cf, logPost, suc=suc, fail=fail, n=x, w=weights, mu_alpha=mu_alpha,
+    cf, log_post, suc=suc, fail=fail, n=x, w=weights, mu_alpha=mu_alpha,
     sd_alpha=sd_alpha, mu_logbeta=mu_logbeta, sd_logbeta=sd_logbeta
   )))
   
