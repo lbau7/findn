@@ -52,12 +52,22 @@ plot.findn <- function(x, min_n = 1, max_n = NULL, power_lim = 0.95, ...) {
   
   data <- data[min_n:max_rows, ]
   data$Rating <- factor(data$Rating, levels = c("Too Low", "Uncertain", "Sufficient"))
+  n_unc <- data$n[which(data$Rating == "Uncertain")]
+  low_bound <- min(n_unc)
+  up_bound <- max(n_unc)
   
   ggplot2::ggplot(data, ggplot2::aes(x = .data$n)) +
     ggplot2::geom_line(ggplot2::aes(y = .data$Est.Power)) +
     ggplot2::geom_ribbon(ggplot2::aes(ymin = .data$Lower.CL, 
       ymax = .data$Upper.CL, fill = .data$Rating), 
       alpha = 0.3) +
+    ggplot2::geom_hline(yintercept = x$targ, color = "darkred") +
+    ggplot2::geom_vline(xintercept = low_bound, col = "darkgreen", alpha = 0.5) +
+    ggplot2::geom_vline(xintercept = up_bound, col = "darkgreen", alpha = 0.5) + 
+    ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) +
+    ggplot2::scale_y_continuous(breaks = seq(0, 1, by = 0.1)) + 
+    ggplot2::scale_fill_discrete(name = "Rating") +
+    ggplot2::xlab("n") +
     ggplot2::ylab("Estimated Power") +
     ggplot2::theme_bw()
 }
