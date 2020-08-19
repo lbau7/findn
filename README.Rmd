@@ -1,48 +1,33 @@
+---
+output: github_document
+editor_options: 
+  chunk_output_type: console
+---
 
 <!-- README.md is generated from README.Rmd. -->
 
-[![Build
-Status](https://travis-ci.com/lbau7/findn.svg?branch=master)](https://travis-ci.com/lbau7/findn)
+[![Build Status](https://travis-ci.com/lbau7/findn.svg?branch=master)](https://travis-ci.com/lbau7/findn)
 
 # Introduction
 
-findn estimates the sample size for a certain target functions that
-simulates a statistical test or a trial. The main function of the
-package is findn, which uses the Bayesian Local Linear Regression (BLL)
-algorithm which uses repeated simulations to estimate the power for
-various sample sizes and a probit model with Bayesian parameter
-estimates to estimate the sample size that corresponds to the target
-power.
+findn estimates the sample size for a certain target functions that simulates a statistical test or a trial. The main function of the package is findn, which uses the Bayesian Local Linear Regression (BLL) algorithm which uses repeated simulations to estimate the power for various sample sizes and a probit model with Bayesian parameter estimates to estimate the sample size that corresponds to the target power.
 
 # Installation
 
 To install findn use:
 
-``` r
+```{r, eval = FALSE}
 # install.packages("devtools")
 devtools::install_github("lbau7/textools")
 ```
 
 # Usage
 
-findn can be used to estimate the sample size for a statistical test or
-a trial when no closed formula to calculate the power or the sample size
-is available. To use findn we have to provide a target function that
-simulates the power of the test or the trial for a certain sample size.
-The target function has to take at least arguments: n, the sample size
-and k, the number of simulations that the power estimate should be based
-on. The target function must return an estimate for the power at sample
-size n, i.e. the proportion of trials where the goal of the trial was
-achieved.
+findn can be used to estimate the sample size for a statistical test or a trial when no closed formula to calculate the power or the sample size is available. To use findn we have to provide a target function that simulates the power of the test or the trial for a certain sample size. The target function has to take at least arguments: n, the sample size and k, the number of simulations that the power estimate should be based on. The target function must return an estimate for the power at sample size n, i.e. the proportion of trials where the goal of the trial was achieved. 
 
-Consider for example a trial where three independent hypotheses are
-tested with a two-sample t-test. We want to control the family wise
-error rate by using the Bonferroni-Holm procedure. We want to estimate
-the sample size corresponding to a target power of 80%, where power is
-defined as the probability to reject at least one of the three null
-hypotheses.
+Consider for example a trial where three independent hypotheses are tested with a two-sample t-test. We want to control the family wise error rate by using the Bonferroni-Holm procedure. We want to estimate the sample size corresponding to a target power of 80%, where power is defined as the probability to reject at least one of the three null hypotheses.
 
-``` r
+```{r, eval = FALSE}
 sim_bh <- function(n, k) {
   success <- numeric(k)
   for (i in 1:k) {
@@ -66,7 +51,7 @@ sim_bh <- function(n, k) {
 
 Now we can use findn to estimate the sample size:
 
-``` r
+```{r, eval = FALSE}
 res_bh <- findn(fun = sim_bh, targ = 0.8, start = 100)
 res_bh
 # $Point_Estimate_n
@@ -78,17 +63,9 @@ res_bh
 # $Message
 # [1] "Normal completion"
 ```
+Point\_Estimate\_n corresponds to the smallest sample size for which the estimated power exceeds the target power, while Minimum\_Sufficient\_n corresponds to the smallest sample size for which the lower limit of the 95% confidence interval for the estimated power exceeds the target power. If a different level for the confidence interval is desired, the parameter level can be used. For more details about the estimated powers and their confidence intervals for various sample sizes we can use the print function and set details to "high".
 
-Point\_Estimate\_n corresponds to the smallest sample size for which the
-estimated power exceeds the target power, while Minimum\_Sufficient\_n
-corresponds to the smallest sample size for which the lower limit of the
-95% confidence interval for the estimated power exceeds the target
-power. If a different level for the confidence interval is desired, the
-parameter level can be used. For more details about the estimated powers
-and their confidence intervals for various sample sizes we can use the
-print function and set details to “high”.
-
-``` r
+```{r, eval = FALSE}
 print(res_bh, details = "high")
 # $Point_Estimate_n
 # [1] 219
@@ -127,7 +104,4 @@ print(res_bh, details = "high")
 # [1] "Normal completion"
 ```
 
-The rating “Too Low” means, that the upper limit of the confidence
-interval doesn’t exceed the target power. “Uncertain” means, that the
-confidence interval contains the target power. “Sufficient” means that
-the lower limit of the confidence interval exceeds the target power.
+The rating "Too Low" means, that the upper limit of the confidence interval doesn't exceed the target power. "Uncertain" means, that the confidence interval contains the target power. "Sufficient" means that the lower limit of the confidence interval exceeds the target power.
