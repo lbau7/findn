@@ -9,10 +9,10 @@ Status](https://travis-ci.com/lbau7/findn.svg?branch=master)](https://travis-ci.
 findn estimates the sample size for a certain target functions that
 simulates a statistical test or a trial. The main function of the
 package is findn, which uses the Bayesian Local Linear Regression (BLL)
-algorithm which uses repeated simulations to estimate the power for
-various sample sizes and a probit model with Bayesian parameter
-estimates to estimate the sample size that corresponds to the target
-power.
+algorithm. The BLL algorithm uses repeated simulations to estimate the
+power for various sample sizes and fits a weighted probit regression
+model with Bayesian parameter estimates to all simulation outcomes to
+estimate the sample size that corresponds to the target power.
 
 # Installation
 
@@ -29,18 +29,18 @@ findn can be used to estimate the sample size for a statistical test or
 a trial when no closed formula to calculate the power or the sample size
 is available. To use findn we have to provide a target function that
 simulates the power of the test or the trial for a certain sample size.
-The target function has to take at least arguments: n, the sample size
-and k, the number of simulations that the power estimate should be based
-on. The target function must return an estimate for the power at sample
-size n, i.e. the proportion of trials where the goal of the trial was
-achieved.
+The target function has to take at least two arguments: n, the sample
+size and k, the number of simulations that the power estimate should be
+based on. The target function must return an estimate for the power at
+sample size n, i.e. the proportion of trials for which the goal of the
+trial was achieved.
 
 Consider for example a trial where three independent hypotheses are
 tested with a two-sample t-test. We want to control the family wise
-error rate by using the Bonferroni-Holm procedure. We want to estimate
-the sample size corresponding to a target power of 80%, where power is
-defined as the probability to reject at least one of the three null
-hypotheses.
+error rate by using the Bonferroni-Holm procedure. We are interested to
+estimate the sample size that corresponds to a target power of 80%,
+where power is defined as the probability to reject at least one of the
+three null hypotheses.
 
 ``` r
 sim_bh <- function(n, k) {
@@ -84,9 +84,9 @@ estimated power exceeds the target power, while Minimum\_Sufficient\_n
 corresponds to the smallest sample size for which the lower limit of the
 95% confidence interval for the estimated power exceeds the target
 power. If a different level for the confidence interval is desired, the
-parameter level can be used. For more details about the estimated powers
-and their confidence intervals for various sample sizes we can use the
-print function and set details to “high”.
+parameter level can be changed. For more details about the estimated
+power values and their confidence intervals for various sample sizes we
+can use the print function and set details to “high”.
 
 ``` r
 print(res_bh, details = "high")
