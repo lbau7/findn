@@ -1,33 +1,34 @@
 #' Find the Sample Size
 #'
-#' \code{findn} estimates the sample size for a certain target function based on 
-#' repeated simulations using a model based approach.
+#' \code{findn} estimates the sample size for a function that returns a 
+#' simulated power value based on repeated simulations using a model based 
+#' approach.
 #'
-#' @param fun A target function that estimates the power of a trial. See details.
-#' @param targ The target power.
-#' @param start An initial guess for the sample size.
-#' @param k How often the target function is evaluated at each design point. The default is 25.
-#' @param init_evals How many evaluations the first model is based on. The default is 100.
-#' @param r A multiplicator for the range of the initial design points. The default is 4.
+#' @template fun
+#' @template targ
+#' @template start
+#' @template k
+#' @template init_evals
+#' @param r A multiplicator for the range of the initial design points.
 #' @param stop The stopping criterion. One of \code{"evals"}, \code{"power_ci"}, 
-#' \code{"abs_unc"}, \code{"rel_unc"}.
-#' @param max_evals Maximum number of function evaluations. The default is 2000.
-#' @param level Significance level for the confidence intervals if \code{stop} is something other
-#' than \code{"evals"}. Also used to determine the levels for the confidence intervals that are printed 
-#' if \code{verbose = TRUE}.
-#' @param power_ci_tol Tolerance parameter if \code{stop = "power_ci"}. The default is 0.02.
-#' @param abs_unc_tol Tolerance parameter if \code{stop = "abs_unc"}. The default is 10.
-#' @param rel_unc_tol Tolerance parameter if \code{stop is "rel_unc"}. The default is 0.1.
-#' @param var_alpha Variance of the prior distribution for the intercept. The default is 0.05.
-#' @param var_beta Variance of the prior distribution for the slope. The default is 1.
-#' @param alpha The significance level of the underlying test. This is used to compute the mean of the prior
-#' distribution of the intercept. The default is 0.05.
-#' @param alternative Either "two.sided" or "one.sided". The default is "two.sided".
+#'   \code{"abs_unc"}, \code{"rel_unc"}.
+#' @template max_evals
+#' @param level Significance level for the confidence intervals if \code{stop} 
+#'   is something other than \code{"evals"}. Also used to determine the levels 
+#'   for the confidence intervals that are printed if \code{verbose = TRUE}.
+#' @param power_ci_tol Tolerance parameter if \code{stop = "power_ci"}.
+#' @param abs_unc_tol Tolerance parameter if \code{stop = "abs_unc"}.
+#' @param rel_unc_tol Tolerance parameter if \code{stop is "rel_unc"}.
+#' @param var_alpha Variance of the prior distribution for the intercept.
+#' @param var_beta Variance of the prior distribution for the slope.
+#' @param alpha The significance level of the underlying test. This is used to 
+#'   compute the mean of the prior distribution of the intercept.
+#' @param alternative Either "two.sided" or "one.sided".
 #' @param minx The minimum sample size that \code{fun} can be evaluated for.
-#' @param verbose If \code{TRUE}, the current sample size estimate, the predicted power and its 
-#' \code{level} percent confidence is returned.
-#' interval is printed after every iteration.
-#' @param ... Further arguments to be passed to \code{findn}.
+#' @param verbose If \code{TRUE}, the current sample size estimate, the 
+#'   predicted power and its \code{level} percent confidence is returned after
+#'   every iteration.
+#' @template dotdotdot
 #'
 #' @details \code{findn} estimates the sample size for a target function that 
 #' simulates a statistical test or a trial. The target function must have at 

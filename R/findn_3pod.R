@@ -3,23 +3,23 @@
 #' \code{findn_3pod} estimates the sample size for a certain target function 
 #' based on a modified version of the 3pod algorithm (Wu & Tian, 2014).
 #'
-#' @param fun A target function that estimates the power of a trial. 
-#' @param targ The target power. Must bei either 0.8 or 0.9. 
-#' @param start An initial guess for the sample size.
-#' @param k How often the target function is evaluated at each design point.
-#' @param startevals How many evaluations are used for the first phase.
-#' @param maxevals Maximum number of function evaluations.
-#' @param ... Further arguments to be passed to \code{findn_3pod}. 
+#' @template fun
+#' @template targ
+#' @template start
+#' @template k
+#' @template init_evals
+#' @template max_evals
+#' @template dotdotdot
 #'
 #' @export
-findn_3pod <- function(fun, targ, start, k = 50, startevals = 100, 
-                       maxevals = 1000, ...) {
+findn_3pod <- function(fun, targ, start, k = 50, init_evals = 100, 
+                       max_evals = 1000, ...) {
   func <- function(x) fun(n = x, k = k, ...)
   ttarg <- stats::qnorm(targ)
-  n <- floor(maxevals / k)
-  n1 <- startevals / k
-  n2 <- ifelse(maxevals == 250, (maxevals * 0.48) / (2 * k), 
-    (maxevals * 0.4) / (2 * k))
+  n <- floor(max_evals / k)
+  n1 <- init_evals / k
+  n2 <- ifelse(max_evals == 250, (max_evals * 0.48) / (2 * k), 
+    (max_evals * 0.4) / (2 * k))
   n3 <- n - n1 - 2 * n2
   
   # Phase 1

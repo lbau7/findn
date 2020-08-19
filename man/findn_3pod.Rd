@@ -4,22 +4,24 @@
 \alias{findn_3pod}
 \title{Find the Sample Size Using the 3pod Algorithm}
 \usage{
-findn_3pod(fun, targ, start, k = 50, startevals = 100, maxevals = 1000, ...)
+findn_3pod(fun, targ, start, k = 50, init_evals = 100, max_evals = 1000, ...)
 }
 \arguments{
-\item{fun}{A target function that estimates the power of a trial.}
+\item{fun}{A function that estimates the power of a trial. The function has
+to take at least two arguments: n, the sample size and k, the number of
+iterations.}
 
-\item{targ}{The target power. Must bei either 0.8 or 0.9.}
+\item{targ}{The target power.}
 
 \item{start}{An initial guess for the sample size.}
 
 \item{k}{How often the target function is evaluated at each design point.}
 
-\item{startevals}{How many evaluations are used for the first phase.}
+\item{init_evals}{How many evaluations the first model is based on.}
 
-\item{maxevals}{Maximum number of function evaluations.}
+\item{max_evals}{The maximum number of simulations.}
 
-\item{...}{Further arguments to be passed to \code{findn_3pod}.}
+\item{...}{Further optional arguments.}
 }
 \description{
 \code{findn_3pod} estimates the sample size for a certain target function 

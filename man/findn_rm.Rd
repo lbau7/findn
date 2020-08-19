@@ -4,18 +4,20 @@
 \alias{findn_rm}
 \title{Find the Sample Size Using the Robbing-Monro Algorithm}
 \usage{
-findn_rm(fun, targ, start, k = 50, maxevals = 1000, j = 1, avg = 0.5, ...)
+findn_rm(fun, targ, start, k = 50, max_evals = 1000, j = 1, avg = 0.5, ...)
 }
 \arguments{
-\item{fun}{A target function that estimates the power of a trial.}
+\item{fun}{A function that estimates the power of a trial. The function has
+to take at least two arguments: n, the sample size and k, the number of
+iterations.}
 
-\item{targ}{The target power. Must bei either 0.8 or 0.9.}
+\item{targ}{The target power.}
 
 \item{start}{An initial guess for the sample size.}
 
 \item{k}{How often the target function is evaluated at each design point.}
 
-\item{maxevals}{Maximum number of function evaluations.}
+\item{max_evals}{The maximum number of simulations.}
 
 \item{j}{A tuning parameter for choosing the step size. In the original
 Robbins-Monro algorithm j is 1.}
@@ -24,7 +26,7 @@ Robbins-Monro algorithm j is 1.}
 algorithm. The sample size estimate is the average of the last avg% of
 design points in the algorithm.}
 
-\item{...}{Further arguments to be passed to \code{findn_rm}.}
+\item{...}{Further optional arguments.}
 }
 \description{
 \code{findn_rm} estimates the sample size for a certain target function

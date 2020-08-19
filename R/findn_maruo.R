@@ -4,12 +4,12 @@
 #' based on repeated simulations using a model based approach proposed by Maruo 
 #' et al. (2018).
 #'
-#' @param fun A target function that estimates the power of a trial. 
-#' @param targ The target power. Must bei either 0.8 or 0.9. 
+#' @template fun 
+#' @param targ. The target power. Must be either 0.8 or 0.9.
 #' @param start Starting value for the algorithm. Maruo et al. suggest to
 #'   use 10. 
-#' @param k How often the target function is evaluated at each design point.
-#' @param ... Further arguments to be passed to \code{findn_maruo}.
+#' @template k
+#' @template dotdotdot
 #'
 #' @export
 findn_maruo <- function(fun, targ, start = 10, k = 100, ...) {
