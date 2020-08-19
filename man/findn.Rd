@@ -88,7 +88,9 @@ approach.
 returns a simulated power value for a test or a trial. The target function 
 must have at least two arguments, \code{n}, the sample size for which the 
 trial is simulated, and \code{k}, that specifies how often the trial is 
-simulated. The function has to return an estimate for the power of the trial 
+simulated. Note that depending on how \code{fun} is written, \code{n} can 
+either be the sample size per group or the total sample size.
+The function has to return an estimate for the power of the trial 
 for the sample size \code{n} based on \code{k} Monte Carlo simulations.
 
 \code{findn} uses an algorithm that assumes a probit model and computes
