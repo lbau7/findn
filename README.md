@@ -64,6 +64,11 @@ sim_bh <- function(n, k) {
 }
 ```
 
+Note that n corresponds to the total sample size in this example, so
+it’s easy to adapt the target function for instance for a design with
+unbalanced sample size allocation. But it’s also possible to set up the
+target function such that n corresponds to the sample size per group.
+
 Now we can use findn to estimate the sample size:
 
 ``` r
