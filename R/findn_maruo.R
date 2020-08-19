@@ -5,7 +5,7 @@
 #' et al. (2018).
 #'
 #' @template fun 
-#' @param targ. The target power. Must be either 0.8 or 0.9.
+#' @param targ The target power. Must be either 0.8 or 0.9.
 #' @param start Starting value for the algorithm. Maruo et al. suggest to
 #'   use 10. 
 #' @template k
