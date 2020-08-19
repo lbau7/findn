@@ -11,14 +11,14 @@ findn_maruo(fun, targ, start = 10, k = 100, ...)
 to take at least two arguments: n, the sample size and k, the number of
 iterations.}
 
+\item{targ}{The target power. Must be either 0.8 or 0.9.}
+
 \item{start}{Starting value for the algorithm. Maruo et al. suggest to
 use 10.}
 
 \item{k}{How often the target function is evaluated at each design point.}
 
 \item{...}{Further optional arguments.}
-
-\item{targ.}{The target power. Must be either 0.8 or 0.9.}
 }
 \description{
 \code{findn_maruo} estimates the sample size for a certain target function 
