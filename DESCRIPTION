@@ -10,7 +10,8 @@ Maintainer: Lukas Baumann <baumann@imbi.uni-heidelberg.de>
 Description: Estimates the sample size for a test or a trial based on repeated simulation using a model based approach.
 Imports: 
   ggplot2,
-  rlang
+  rlang,
+  scales
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
