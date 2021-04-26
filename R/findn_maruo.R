@@ -16,7 +16,7 @@ findn_maruo <- function(fun, targ, start = 10, k = 100, ...) {
   if(targ == 0.8) {
     boundary <- 0.9
   } else if (targ == 0.9) {
-    boundary < 0.95
+    boundary <- 0.95
   } else {
     stop ("targ must be 0.8 or 0.9")
   }
