@@ -2,7 +2,7 @@
 get_par_maruo <- function(x, y, k) {
   y_mat <- cbind(y, 1 - y) * k
   mod <- stats::glm(y_mat ~ sqrt(x), family = stats::binomial(link = "probit"))
-  cf <- stats::coef(mod)
+  cf <- unname(stats::coef(mod))
   return(cf)
 }
 
@@ -50,7 +50,7 @@ get_final_point_3pod <- function(fit, ttarg) {
 get_b <- function(x, y) {
   rm.fit <- stats::lm(y ~ x)
   b <- stats::coef(rm.fit)[2]
-  ifelse(b < 0.0001, 0.0001, b)
+  unname(ifelse(b < 0.0001, 0.0001, b))
 }
 
 # Helper functions for findn
