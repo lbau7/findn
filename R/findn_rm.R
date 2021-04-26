@@ -20,7 +20,7 @@ findn_rm <- function(fun, targ, start, k = 50, max_evals = 1000, j = 1,
                      avg = 0.5, ...) {
   if (j <= 0.5 | j > 1) stop("j has to be in (0.5, 1]")
   if (avg <= 0 | avg > 1) stop("avg has to be in (0, 1]")
-  if (max_evals < 3 * k) stop("too little evals")
+  if (max_evals < 3 * k) stop("max_evals has to be at least 3*k")
   if (max_evals %% k != 0) stop("max_evals has to be multiple of k")
   
   func <- function(x) fun(n = x, k = k, ...)
