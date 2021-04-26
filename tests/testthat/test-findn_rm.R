@@ -6,13 +6,20 @@ test_that("findn_rm finds approximately the correct sample size", {
     mean(pvals <= 0.05)
   }
   
-  res_rm <- findn_rm(fun = fun_ttest, targ = 0.8, start = 100, k = 50, 
+  res_rm1 <- findn_rm(fun = fun_ttest, targ = 0.8, start = 100, k = 50, 
     max_evals = 1000, j = 1, avg = 0.5)
-  n_true <- ceiling(power.t.test(delta = 5, sd = 10, type = "one.sample", 
-    power = 0.8)$n)
+  res_rm2 <- findn_rm(fun = fun_ttest, targ = 0.9, start = 100, k = 50, 
+    max_evals = 1000, j = 1, avg = 0.5)
   
-  expect_equal(res_rm$Point_Estimate_n, n_true, tol = 2)
-  expect_equal(res_rm$Point_Estimate_n_avg, n_true, tol = 2)
+  n_true1 <- ceiling(power.t.test(delta = 5, sd = 10, type = "one.sample", 
+    power = 0.8)$n)
+  n_true2 <- ceiling(power.t.test(delta = 5, sd = 10, type = "one.sample", 
+    power = 0.9)$n)
+  
+  expect_equal(res_rm1$Point_Estimate_n, n_true1, tol = 2)
+  expect_equal(res_rm1$Point_Estimate_n_avg, n_true1, tol = 2)
+  expect_equal(res_rm2$Point_Estimate_n, n_true2, tol = 2)
+  expect_equal(res_rm2$Point_Estimate_n_avg, n_true2, tol = 2)
 })
 
 test_that("findn_rm stops when it's supposed to", {
