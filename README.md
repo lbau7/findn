@@ -1,8 +1,13 @@
 
 <!-- README.md is generated from README.Rmd. -->
+<!-- badges: start -->
 
 [![Build
 Status](https://travis-ci.com/lbau7/findn.svg?branch=master)](https://travis-ci.com/lbau7/findn)
+
+[![Codecov test
+coverage](https://codecov.io/gh/lbau7/findn/branch/master/graph/badge.svg)](https://codecov.io/gh/lbau7/findn?branch=master)
+<!-- badges: end -->
 
 # Introduction
 
