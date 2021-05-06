@@ -17,11 +17,12 @@ transf_y <- function(x) {
   }
 }
 
-fit_mod_3pod <- function (x, y, k) {
+fit_mod_3pod <- function (x, y, k, alpha) {
   ymat <- cbind(y, 1 - y) * k
+  off.par <- rep(stats::qnorm(alpha), length(x))
   fit <- stats::glm(ymat ~ x, family = stats::binomial("probit"))
   if(stats::coef(fit)[2] < 0.0001) {
-    fit <- stats::glm(ymat ~ x - 1 + offset(rep(qnorm(0.025), length(x))),
+    fit <- stats::glm(ymat ~ x - 1 + offset(off.par),
       family = stats::binomial("probit"))
   }
   return(fit)
