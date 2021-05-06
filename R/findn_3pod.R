@@ -35,7 +35,7 @@ findn_3pod <- function(fun, targ, start, k = 50, init_evals = 100,
   # Phase 2
   for (i in 1:n2) {
     ph2.mod <- fit_mod_3pod(x = x, y = y, k = k, alpha = alpha)
-    new_x <- pmax(get_new_points_3pod(ph2.mod), min_x)
+    new_x <- pmax(get_new_points_3pod(ph2.mod, alpha), min_x)
     new_y <- sapply(new_x, func)
     x <- c(x, new_x)
     y <- c(y, new_y)

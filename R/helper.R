@@ -34,9 +34,9 @@ fit_mod_final_3pod <- function (x, y, k) {
   return(fit)
 }
 
-get_new_points_3pod <- function(fit) {
+get_new_points_3pod <- function(fit, alpha) {
   cf <- stats::coef(fit)
-  if (length(cf) == 1) cf <- c(stats::qnorm(0.025), cf)
+  if (length(cf) == 1) cf <- c(stats::qnorm(alpha), cf)
   xLB <- floor((stats::qnorm(0.128) - cf[1]) / cf[2])
   xUB <- ceiling((stats::qnorm(0.872) - cf[1]) / cf[2])
   c(xLB, xUB)
