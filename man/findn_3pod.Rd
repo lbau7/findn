@@ -4,7 +4,19 @@
 \alias{findn_3pod}
 \title{Find the Sample Size Using the 3pod Algorithm}
 \usage{
-findn_3pod(fun, targ, start, k = 50, init_evals = 100, max_evals = 1000, ...)
+findn_3pod(
+  fun,
+  targ,
+  start,
+  k = 50,
+  init_evals = 100,
+  max_evals = 1000,
+  alpha = 0.05,
+  alternative = c("two.sided", "one.sided"),
+  min_x = 2,
+  max_x = 1000,
+  ...
+)
 }
 \arguments{
 \item{fun}{A function that estimates the power of a trial. The function has
@@ -20,6 +32,19 @@ iterations.}
 \item{init_evals}{How many evaluations the first model is based on.}
 
 \item{max_evals}{The maximum number of simulations.}
+
+\item{alpha}{The significance level of the underlying test. This is only
+used when a fixed-intercept model is calculated as a fallback when
+the \code{start} is way off.}
+
+\item{alternative}{Either "two.sided" or "one.sided". This is only
+used when a fixed-intercept model is calculated as a fallback when
+the \code{start} is way off.}
+
+\item{min_x}{The minimum sample size that \code{fun} can be evaluated for.}
+
+\item{max_x}{An upper bound for the sample size. This is only used if
+the estimated sample size after the second phase is very large.}
 
 \item{...}{Further optional arguments.}
 }

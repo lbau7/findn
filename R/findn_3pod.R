@@ -9,6 +9,15 @@
 #' @template k
 #' @template init_evals
 #' @template max_evals
+#' @param alpha The significance level of the underlying test. This is only
+#'   used when a fixed-intercept model is calculated as a fallback when
+#'   the \code{start} is way off. 
+#' @param alternative Either "two.sided" or "one.sided". This is only
+#'   used when a fixed-intercept model is calculated as a fallback when
+#'   the \code{start} is way off.
+#' @param min_x The minimum sample size that \code{fun} can be evaluated for.
+#' @param max_x An upper bound for the sample size. This is only used if
+#'   the estimated sample size after the second phase is very large.
 #' @template dotdotdot
 #'
 #' @export
