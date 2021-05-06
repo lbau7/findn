@@ -6,8 +6,10 @@ test_that("findn_3pod finds approximately the correct sample size", {
     mean(pvals <= 0.05)
   }
   
-  res_3pod1 <- findn_3pod(fun = fun_ttest, targ = 0.8, start = 100, k = 50)
-  res_3pod2 <- findn_3pod(fun = fun_ttest, targ = 0.9, start = 100, k = 50)
+  res_3pod1 <- suppressWarnings(findn_3pod(fun = fun_ttest, targ = 0.8, 
+    start = 100, k = 50))
+  res_3pod2 <- suppressWarnings(findn_3pod(fun = fun_ttest, targ = 0.9, 
+    start = 100, k = 50))
   
   n_true1 <- ceiling(power.t.test(delta = 5, sd = 10, type = "one.sample", 
     power = 0.8)$n)
