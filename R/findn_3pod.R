@@ -13,7 +13,12 @@
 #'
 #' @export
 findn_3pod <- function(fun, targ, start, k = 50, init_evals = 100, 
-                       max_evals = 1000, ...) {
+                       max_evals = 1000, 
+                       alpha = 0.05, alternative = c("two.sided", "one.sided"),
+                       min_x = 2, max_x = 1000, ...) {
+  alternative <- match.arg(alternative)
+  alpha <- ifelse(alternative == "two.sided", alpha / 2, alpha)
+  
   func <- function(x) fun(n = x, k = k, ...)
   ttarg <- stats::qnorm(targ)
   n <- floor(max_evals / k)
@@ -23,13 +28,14 @@ findn_3pod <- function(fun, targ, start, k = 50, init_evals = 100,
   n3 <- n - n1 - 2 * n2
   
   # Phase 1
-  x <- round(seq(from = 0.25 * start, to = 4 * start, length.out = n1))
+  x <- pmax(round(seq(from = 0.25 * start, to = 4 * start, length.out = n1)),
+    min_x)
   y <- sapply(x, func)
   
   # Phase 2
   for (i in 1:n2) {
-    ph2.mod <- fit_mod_3pod(x, y, k)
-    new_x <- pmax(get_new_points_3pod(ph2.mod), 2)
+    ph2.mod <- fit_mod_3pod(x = x, y = y, k = k, alpha = alpha)
+    new_x <- pmax(get_new_points_3pod(ph2.mod), min_x)
     new_y <- sapply(new_x, func)
     x <- c(x, new_x)
     y <- c(y, new_y)
@@ -41,7 +47,7 @@ findn_3pod <- function(fun, targ, start, k = 50, init_evals = 100,
   b <- ifelse(b < 0.0001, 0.0001, b)
   
   x <- ty <- numeric(n3)
-  x[1] <- pmin(pmax(get_final_point_3pod(ph2.final, ttarg), 2), 1000)
+  x[1] <- pmin(pmax(get_final_point_3pod(ph2.final, ttarg), min_x), max_x)
   ty[1] <- transf_y(func(x[1]))
   
   for(i in 2:n3) {
