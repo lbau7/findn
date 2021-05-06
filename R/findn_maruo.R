@@ -50,9 +50,8 @@ findn_maruo <- function(fun, targ, start = 10, k = 100, ...) {
     }
   }
   
-  sel_index <- min(which(power > 0.6))
-  n_fit <- n[sel_index:length(n)]
-  pow_fit <- power[sel_index:length(power)]
+  n_fit <- n[which(power > 0.6)]
+  pow_fit <- power[which(power > 0.6)]
   cf <- get_par_maruo(x = n_fit, y = pow_fit, k = k)
   samp_size <- as.numeric(ceiling((ttarg - cf[1])^2 / cf[2]^2))
   return(list(
