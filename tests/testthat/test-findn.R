@@ -17,3 +17,11 @@ test_that("findn finds approximately the correct sample size", {
   expect_equal(res_bll1$sample_size, n_true1, tol = 2)
   expect_equal(res_bll2$sample_size, n_true2, tol = 2)
 })
+
+test_that("findn stops when it's supposed to", {
+  expect_error(findn(fun = function(n, k) n, targ = 0.8, start = 100,
+    k = 50, init_evals = 25))
+  expect_error(findn(fun = function(n, k) n, targ = 0.8, start = 100,
+    k = 50, max_evals = 100))
+})
+  
