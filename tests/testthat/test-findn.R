@@ -25,3 +25,70 @@ test_that("findn stops when it's supposed to", {
     k = 50, max_evals = 100))
 })
   
+test_that("findn works when the starting value is way off", {
+  set.seed(20210514)
+  fun_ttest1 <- function(n, k) {
+    n_mat <- matrix(rnorm(n * k, mean = 5, sd = 10), ncol = k)
+    pvals <- apply(n_mat, 2, function(x) t.test(x)$p.value)
+    mean(pvals <= 0.05)
+  }
+  
+  # fun_ttest2 <- function(n, k) {
+  #   n_mat <- matrix(rnorm(n * k, mean = 5, sd = 150), ncol = k)
+  #   pvals <- apply(n_mat, 2, function(x) t.test(x)$p.value)
+  #   mean(pvals <= 0.05)
+  # }
+  
+  res_bll1 <- suppressWarnings(findn(fun = fun_ttest1, targ = 0.8, 
+    start = 5000))
+  # res_bll2 <- suppressWarnings(findn(fun = fun_ttest2, targ = 0.9, 
+  #   k = 5, init_evals = 20, start = 2))
+ 
+  n_true1 <- ceiling(power.t.test(delta = 5, sd = 10, type = "one.sample", 
+    power = 0.8)$n)
+  # n_true2 <- ceiling(power.t.test(delta = 5, sd = 150, type = "one.sample", 
+  #   power = 0.9)$n)
+  
+  expect_equal(res_bll1$sample_size, n_true1, tol = 2)
+  # expect_equal(res_bll2$sample_size, n_true2, tol = 2)
+})
+
+test_that("stopping rules of findn work", {
+  set.seed(20210514)
+  fun_ttest <- function(n, k) {
+    n_mat <- matrix(rnorm(n * k, mean = 5, sd = 10), ncol = k)
+    pvals <- apply(n_mat, 2, function(x) t.test(x)$p.value)
+    mean(pvals <= 0.05)
+  }
+  
+  res_bll1 <- suppressWarnings(findn(fun = fun_ttest, targ = 0.8, 
+    start = 100, stop = "power_ci", power_ci_tol = 0.02))
+  det_bll1 <- get_details(res_bll1)
+  len_bll1 <- diff(as.numeric(det_bll1[which(det_bll1$n == 
+      res_bll1$sample_size), c(2, 4)]))
+  
+  res_bll2 <- suppressWarnings(findn(fun = fun_ttest, targ = 0.8, 
+    start = 100, stop = "abs_unc", abs_unc_tol = 10))
+  det_bll2 <- get_details(res_bll2)
+  len_bll2 <- nrow(det_bll2[which(det_bll2$Ratin == "Uncertain"), ])
+  
+  res_bll3 <- suppressWarnings(findn(fun = fun_ttest, targ = 0.8, 
+    start = 100, stop = "rel_unc", rel_unc_tol = 0.1))
+  det_bll3 <- get_details(res_bll3)
+  min_bll3 <- as.numeric(det_bll3[min(which(det_bll3$Rating == 
+      "Uncertain")), 1])
+  max_bll3 <- as.numeric(det_bll3[max(which(det_bll3$Rating == 
+      "Uncertain")), 1])
+  len_bll3 <- (max_bll3 - min_bll3) / min_bll3
+  
+  expect_lt(len_bll1, 0.02)
+  expect_lte(len_bll2, 10)
+  expect_lte(len_bll3, 0.1)
+})
+
+test_that("findn stops when it's supposed to", {
+  expect_error(findn(fun = function(n, k) n, targ = 0.8, start = 100,
+    k = 50, init_evals = 25))
+  expect_error(findn(fun = function(n, k) n, targ = 0.8, start = 100,
+    k = 50, max_evals = 100))
+})
