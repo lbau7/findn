@@ -86,9 +86,42 @@ test_that("stopping rules of findn work", {
   expect_lte(len_bll3, 0.1)
 })
 
+test_that("findn returns estimate after every iteration when verbose = TRUE", {
+  set.seed(20210514)
+  fun_ttest <- function(n, k) {
+    n_mat <- matrix(rnorm(n * k, mean = 5, sd = 10), ncol = k)
+    pvals <- apply(n_mat, 2, function(x) t.test(x)$p.value)
+    mean(pvals <= 0.05)
+  }
+  
+  res_bll <- capture.output(suppressWarnings(findn(fun = fun_ttest, targ = 0.8, 
+    start = 100, k = 25, init_evals = 100, max_evals = 2000, verbose = TRUE)))
+
+  expect_equal(length(res_bll) - 9, (2000 - 100) / 25 / 2)
+})
+  
 test_that("findn stops when it's supposed to", {
   expect_error(findn(fun = function(n, k) n, targ = 0.8, start = 100,
     k = 50, init_evals = 25))
   expect_error(findn(fun = function(n, k) n, targ = 0.8, start = 100,
     k = 50, max_evals = 100))
 })
+
+test_that("findn shows correct exit message", {
+  set.seed(20210514)
+  fun_ttest <- function(n, k) {
+    n_mat <- matrix(rnorm(n * k, mean = 5, sd = 10), ncol = k)
+    pvals <- apply(n_mat, 2, function(x) t.test(x)$p.value)
+    mean(pvals <= 0.05)
+  }
+  
+  res_bll1 <- suppressWarnings(findn(fun = fun_ttest, targ = 0.8, start = 100,
+    stop = "power_ci", power_ci_tol = 0.05))
+  res_bll2 <- suppressWarnings(findn(fun = fun_ttest, targ = 0.8, start = 100,
+    stop = "power_ci", power_ci_tol = 0.001))
+  
+  expect_equal(res_bll1$exit.mes, "Stopping criterion fulfilled")
+  expect_equal(res_bll2$exit.mes,
+    "Maximum number of evaluations reached without sufficient accuracy")
+})
+  
