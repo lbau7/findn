@@ -101,10 +101,19 @@ test_that("findn returns estimate after every iteration when verbose = TRUE", {
 })
   
 test_that("findn stops when it's supposed to", {
+  set.seed(20210514)
+  fun_ttest <- function(n, k) {
+    n_mat <- matrix(rnorm(n * k, mean = 5, sd = 10), ncol = k)
+    pvals <- apply(n_mat, 2, function(x) t.test(x)$p.value)
+    mean(pvals <= 0.05)
+  }
+  
   expect_error(findn(fun = function(n, k) n, targ = 0.8, start = 100,
     k = 50, init_evals = 25))
   expect_error(findn(fun = function(n, k) n, targ = 0.8, start = 100,
     k = 50, max_evals = 100))
+  expect_error(suppressWarnings(findn(fun = fun_ttest, targ = 0.8,
+    start = 5000, var_beta = 1000, var_alpha = 1000)))
 })
 
 test_that("findn shows correct exit message", {
@@ -119,6 +128,7 @@ test_that("findn shows correct exit message", {
     stop = "power_ci", power_ci_tol = 0.05))
   res_bll2 <- suppressWarnings(findn(fun = fun_ttest, targ = 0.8, start = 100,
     stop = "power_ci", power_ci_tol = 0.001))
+  
   
   expect_equal(res_bll1$exit.mes, "Stopping criterion fulfilled")
   expect_equal(res_bll2$exit.mes,
