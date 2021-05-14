@@ -83,7 +83,7 @@ fit_mod <- function(x, y, k, weights, start_par,
     sd_alpha=sd_alpha, mu_logbeta=mu_logbeta, sd_logbeta=sd_logbeta
   )), silent = TRUE)
   
-  if (class(vcov) == "try-error") {
+  if (class(vcov)[1] == "try-error") {
     stop("vc-matrix cannot be computed.
     Try a different value for start or smaller prior variances.")
   }
