@@ -134,10 +134,10 @@ stop_uncertainty <- function(tol, fit, xest, targ, level, type) {
     x.unc <- x[which(pred.uppercl > 0.8 & pred.lowercl < 0.8)]
     
     if (type == "absolute") {
-      cond <- length(x.unc) < tol
+      cond <- length(x.unc) <= tol
     } else if (type == "relative") {
       rel.unc <- (x.unc[length(x.unc)] - x.unc[1]) / x.unc[1]
-      cond <- rel.unc < tol
+      cond <- rel.unc <= tol
     }
     return(list(stop = cond))
   }
