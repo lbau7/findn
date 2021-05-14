@@ -81,7 +81,12 @@ fit_mod <- function(x, y, k, weights, start_par,
   vcov <- try(solve(stats::optimHess(
     cf, log_post, suc=suc, fail=fail, n=x, w=weights, mu_alpha=mu_alpha,
     sd_alpha=sd_alpha, mu_logbeta=mu_logbeta, sd_logbeta=sd_logbeta
-  )))
+  )), silent = TRUE)
+  
+  if (class(vcov) == "try-error") {
+    stop("vc-matrix cannot be computed.
+    Try a different value for start or smaller prior variances.")
+  }
   
   list(cf = cf, vcov = vcov)
 }
@@ -91,11 +96,7 @@ predict_fit <- function(fit, new_n, se) {
   pred <- X %*% fit$cf
   
   if(se == TRUE) {
-    if(is.matrix(fit$vcov)) {
-      se <- sqrt(diag(X %*% fit$vcov %*% t(X)))
-    } else {
-      se <- 0.5
-    }
+    se <- sqrt(diag(X %*% fit$vcov %*% t(X)))
     data.frame(pred = pred, se = se)
   } else {
     pred
@@ -111,36 +112,28 @@ wgts <- function (typred, ttarg) {
 }
 
 stop_power <- function (tol, fit, xest, targ, level) {
-  if (!is.matrix(fit$vcov)) {
-    return(list(stop = FALSE))
-  } else {
-    pred <- predict_fit(fit, xest, se = TRUE)
-    crit <- stats::qnorm(1 - level / 2)
-    cond1 <- pred$pred[1] + crit * pred$se[1] < stats::qnorm(targ + tol)
-    cond2 <- pred$pred[1] - crit * pred$se[1] > stats::qnorm(targ - tol)
-    return(list(stop = cond1 & cond2))
-  }
+  pred <- predict_fit(fit, xest, se = TRUE)
+  crit <- stats::qnorm(1 - level / 2)
+  cond1 <- pred$pred[1] + crit * pred$se[1] < stats::qnorm(targ + tol)
+  cond2 <- pred$pred[1] - crit * pred$se[1] > stats::qnorm(targ - tol)
+  return(list(stop = cond1 & cond2))
 }
 
 stop_uncertainty <- function(tol, fit, xest, targ, level, type) {
-  if (!is.matrix(fit$vcov)) {
-    return(list(stop = FALSE))
-  } else {
-    x <- 1:(3*xest)
-    pred <- predict_fit(fit, x, se = TRUE)
-    crit <- stats::qnorm(1 - level / 2)
-    pred.lowercl <- stats::pnorm(pred$pred - crit * pred$se)
-    pred.uppercl <- stats::pnorm(pred$pred + crit * pred$se)
-    x.unc <- x[which(pred.uppercl > 0.8 & pred.lowercl < 0.8)]
-    
-    if (type == "absolute") {
-      cond <- length(x.unc) <= tol
-    } else if (type == "relative") {
-      rel.unc <- (x.unc[length(x.unc)] - x.unc[1]) / x.unc[1]
-      cond <- rel.unc <= tol
-    }
-    return(list(stop = cond))
+  x <- 1:(3*xest)
+  pred <- predict_fit(fit, x, se = TRUE)
+  crit <- stats::qnorm(1 - level / 2)
+  pred.lowercl <- stats::pnorm(pred$pred - crit * pred$se)
+  pred.uppercl <- stats::pnorm(pred$pred + crit * pred$se)
+  x.unc <- x[which(pred.uppercl > 0.8 & pred.lowercl < 0.8)]
+  
+  if (type == "absolute") {
+    cond <- length(x.unc) <= tol
+  } else if (type == "relative") {
+    rel.unc <- (x.unc[length(x.unc)] - x.unc[1]) / x.unc[1]
+    cond <- rel.unc <= tol
   }
+  return(list(stop = cond))
 }
 
 print_verbose <- function(fit, xest, level) {
