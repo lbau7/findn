@@ -137,24 +137,16 @@ stop_uncertainty <- function(tol, fit, xest, targ, level, type) {
 }
 
 print_verbose <- function(fit, xest, level) {
-  if(is.matrix(fit$vcov)) {
-    pred <- predict_fit(fit, ceiling(xest), se = TRUE)
-    crit <- stats::qnorm(1 - level / 2)
-    cat(
-      "n_Estimate: ", ceiling(xest), " ",
-      "Predicted Power: ", round(stats::pnorm(pred$pred), 3), " ",
-      "[", round(stats::pnorm(pred$pred - crit * pred$se), 3), 
-      "; ",
-      round(stats::pnorm(pred$pred + crit * pred$se), 3), "]",
-      "\n", sep =""
-    )
-  } else {
-    pred <- predict_fit(fit, ceiling(xest), se = FALSE)
-    cat(
-      "n_Estimate", ceiling(xest),
-      "Predicted Power:", round(stats::pnorm(pred$pred), 3)
-    )
-  }
+  pred <- predict_fit(fit, ceiling(xest), se = TRUE)
+  crit <- stats::qnorm(1 - level / 2)
+  cat(
+    "n_Estimate: ", ceiling(xest), " ",
+    "Predicted Power: ", round(stats::pnorm(pred$pred), 3), " ",
+    "[", round(stats::pnorm(pred$pred - crit * pred$se), 3), 
+    "; ",
+    round(stats::pnorm(pred$pred + crit * pred$se), 3), "]",
+    "\n", sep =""
+  )
 }
 
 get_init_par <- function(x, y, k, alpha) {
