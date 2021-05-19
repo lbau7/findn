@@ -91,19 +91,32 @@ test_that("get_new_points_3pod works", {
     mean(pvals <= 0.05)
   }
   
-  x <- 5:30
-  y <- sapply(x, function(x) fun_ttest(n = x, k = 50))
-  y_mat <- cbind(y * 50, (1 - y) * 50)
-  fit <- fit_mod_3pod(x = x, y = y, k = 50, alpha = 0.025)
-  new_x <- get_new_points_3pod(fit)
-  new_x1 <- c(new_x[1], new_x[1] + 1, new_x[2] - 1, new_x[2])
-  pred <- predict(fit, newdata = data.frame(x = new_x1), type = "response")
+  x1 <- 5:30
+  y1 <- sapply(x1, function(x) fun_ttest(n = x, k = 50))
+  fit1 <- fit_mod_3pod(x = x1, y = y1, k = 50, alpha = 0.025)
+  new_x11 <- get_new_points_3pod(fit1)
+  new_x12 <- c(new_x11[1], new_x11[1] + 1, new_x11[2] - 1, new_x11[2])
+  pred1 <- predict(fit1, newdata = data.frame(x = new_x12), type = "response")
   
-  expect_lte(pred[1], 0.128)
-  expect_gte(pred[2], 0.128)
-  expect_lte(pred[3], 0.872)
-  expect_gte(pred[4], 0.872)
-  expect_length(new_x, 2)
+  x2 <- 200:250
+  y2 <- sapply(x2, function(x) fun_ttest(n = x, k = 50))
+  fit2 <- suppressWarnings(fit_mod_3pod(x = x2, y = y2, k = 50, alpha = 0.025))
+  new_x21 <- get_new_points_3pod(fit2, alpha = 0.025)
+  new_x22 <- c(new_x21[1], new_x21[1] + 1, new_x21[2] - 1, new_x21[2])
+  new_off.par <- rep(stats::qnorm(0.025), 4)
+  pred2 <- predict(fit2, newdata = data.frame(x = new_x22, off.par = 
+      new_off.par), type = "response")
+  
+  expect_lte(pred1[1], 0.128)
+  expect_gte(pred1[2], 0.128)
+  expect_lte(pred1[3], 0.872)
+  expect_gte(pred1[4], 0.872)
+  expect_length(new_x11, 2)
+  expect_lte(pred2[1], 0.128)
+  expect_gte(pred2[2], 0.128)
+  expect_lte(pred2[3], 0.872)
+  expect_gte(pred2[4], 0.872)
+  expect_length(new_x21, 2)
 })
 
 test_that("get_final_point_3pod works", {
