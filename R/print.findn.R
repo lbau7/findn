@@ -8,6 +8,7 @@
 #' are shown for all sample sizes from 1 to \code{max_n} if \code{max_n} is non-\code{NULL}. 
 #' See also 'Details'.
 #' @param digits Number of decimal places to be shown.
+#' @param invisible Whether the results should be printed or only assigned.
 #' @param ... Further arguments.
 #'
 #' @details When \code{details = "low"}, only the point estimate (i.e., the smallest sample 
@@ -51,7 +52,8 @@
 #'
 #' # print with default settings
 #' print(res.ttest, details = "low", digits = 3)
-print.findn <- function(x, details = c("low", "high"), max_n = NULL, digits = 3, ...) {
+print.findn <- function(x, details = c("low", "high"), max_n = NULL, 
+  digits = 3, invisible = FALSE, ...) {
   details <- match.arg(details)
   detail.df <- get_details(x, details, max_n)
 
@@ -68,5 +70,9 @@ print.findn <- function(x, details = c("low", "high"), max_n = NULL, digits = 3,
       Message = x$exit.mes
     )
   }
-  print(x_list, ...)
+  if (invisible) {
+    invisible(x_list)
+  } else {
+    print(x_list, ...)
+  }
 }
