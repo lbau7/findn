@@ -185,53 +185,38 @@ get_new_points <- function(fit, xest, targ) {
 
 get_details <- function(out, details = c("high", "low"), max_n = NULL) {
   details <- match.arg(details)
-  if (!is.matrix(out$fit$vcov)) {
-    if(is.null(max_n)) {
-      x <- 1:(5 * out$sample_size)
-    } else {
-      x <- 1:max_n
-    }
-    pred <- stats::pnorm(predict_fit(out$fit, x, se = FALSE))
-    print.df <- data.frame("n" = x, "Est.Power" = pred)
-    if(is.null(max_n)) {
-      print.df <- with(print.df,
-        print.df[which(Est.Power > (out$targ - 0.02) & Est.Power < (out$targ + 0.02)), ]
-      )
-    }
+  if(is.null(max_n)) {
+    x <- 1:(5 * out$sample_size)
   } else {
+    x <- 1:max_n
+  }
+  pred <- predict_fit(out$fit, x, se = TRUE)
+  crit <- stats::qnorm(1 - out$level / 2)
+  pred.lowercl <- stats::pnorm(pred$pred - crit * pred$se)
+  pred.uppercl <- stats::pnorm(pred$pred + crit * pred$se)
+  
+  rating <- ifelse(pred.uppercl < out$targ, "Too Low",
+    ifelse(pred.lowercl > out$targ, "Sufficient", "Uncertain"))
+  
+  if(details == "low") {
+    print.df <- x[min(which(rating == "Sufficient"))]
+  } else {
+    print.df <- data.frame(
+      "n" = x,
+      "Est.Power" = stats::pnorm(pred$pred),
+      "Lower CL" = pred.lowercl,
+      "Upper CL" = pred.uppercl,
+      "Rating" = rating
+    )
+    
     if(is.null(max_n)) {
-      x <- 1:(5 * out$sample_size)
-    } else {
-      x <- 1:max_n
-    }
-    pred <- predict_fit(out$fit, x, se = TRUE)
-    crit <- stats::qnorm(1 - out$level / 2)
-    pred.lowercl <- stats::pnorm(pred$pred - crit * pred$se)
-    pred.uppercl <- stats::pnorm(pred$pred + crit * pred$se)
-    
-    rating <- ifelse(pred.uppercl < out$targ, "Too Low",
-      ifelse(pred.lowercl > out$targ, "Sufficient", "Uncertain"))
-    
-    if(details == "low") {
-      print.df <- x[min(which(rating == "Sufficient"))]
-    } else {
-      print.df <- data.frame(
-        "n" = x,
-        "Est.Power" = stats::pnorm(pred$pred),
-        "Lower CL" = pred.lowercl,
-        "Upper CL" = pred.uppercl,
-        "Rating" = rating
-      )
-      
-      if(is.null(max_n)) {
-        if (length(print.df$Rating == "Uncertain") > 0) {
-          lower.unc <- min(which(print.df$Rating == "Uncertain"))
-          upper.unc <- max(which(print.df$Rating == "Uncertain"))
-          print.df <- print.df[(lower.unc - 3):(upper.unc + 3), ]
-        } else {
-          lower.suf <- min(which(print.df$Rating == "Sufficient"))
-          print.df <- print.df[(lower.suf - 3):(lower.suf + 2), ]
-        }
+      if (length(print.df$Rating == "Uncertain") > 0) {
+        lower.unc <- min(which(print.df$Rating == "Uncertain"))
+        upper.unc <- max(which(print.df$Rating == "Uncertain"))
+        print.df <- print.df[(lower.unc - 3):(upper.unc + 3), ]
+      } else {
+        lower.suf <- min(which(print.df$Rating == "Sufficient"))
+        print.df <- print.df[(lower.suf - 3):(lower.suf + 2), ]
       }
     }
   }
