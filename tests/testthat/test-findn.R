@@ -56,18 +56,18 @@ test_that("stopping rules of findn work", {
   
   res_bll1 <- suppressWarnings(findn(fun = fun_ttest, targ = 0.8, 
     start = 100, stop = "power_ci", power_ci_tol = 0.02))
-  det_bll1 <- get_details(res_bll1)
+  det_bll1 <- print(res_bll1, details = "high", invisible = TRUE)$Details
   len_bll1 <- diff(as.numeric(det_bll1[which(det_bll1$n == 
       res_bll1$sample_size), c(2, 4)]))
   
   res_bll2 <- suppressWarnings(findn(fun = fun_ttest, targ = 0.8, 
     start = 100, stop = "abs_unc", abs_unc_tol = 10))
-  det_bll2 <- get_details(res_bll2)
+  det_bll2 <- print(res_bll2, details = "high", invisible = TRUE)$Details
   len_bll2 <- nrow(det_bll2[which(det_bll2$Ratin == "Uncertain"), ])
   
   res_bll3 <- suppressWarnings(findn(fun = fun_ttest, targ = 0.8, 
     start = 100, stop = "rel_unc", rel_unc_tol = 0.1))
-  det_bll3 <- get_details(res_bll3)
+  det_bll3 <- print(res_bll3, details = "high", invisible = TRUE)$Details
   min_bll3 <- as.numeric(det_bll3[min(which(det_bll3$Rating == 
       "Uncertain")), 1])
   max_bll3 <- as.numeric(det_bll3[max(which(det_bll3$Rating == 
