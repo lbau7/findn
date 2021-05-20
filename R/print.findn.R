@@ -60,7 +60,7 @@ print.findn <- function(x, details = c("low", "high"), max_n = NULL,
   if (details == "low") {
     x_list <- list(
       Point_Estimate_n = x$sample_size,
-      Minimum_Sufficient_n = format(detail.df, digits = digits),
+      Minimum_Sufficient_n = detail.df,
       Message = x$exit.mes
     )
   } else {
