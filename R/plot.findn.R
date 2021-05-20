@@ -38,19 +38,20 @@
 #' # plot with default settings
 #' plot(res.ttest, power_lim = 0.95)
 plot.findn <- function(x, min_n = 1, max_n = NULL, power_lim = 0.95, ...) {
-  if(is.null(max_n)) max_n <- min(3 * x$sample_size, 10000)
-  data <- get_details(x, max_n = max_n)
-
   if(is.null(max_n)) {
-    if(length(which(data$Lower.CL > power_lim)) == 0)
-      max_n <- 10000
+    max_n <- min(3 * x$sample_size, 10000)
+    data <- get_details(x, max_n = max_n)
+    if(length(which(data$Lower.CL > power_lim)) == 0) {
+      max_n <- max_n * 10
+    }
+    data <- get_details(x, max_n = max_n)
+    max_rows <- ifelse(length(which(data$Lower.CL > power_lim)) > 0,
+      min(which(data$Lower.CL > power_lim)), max_n)
+    data <- data[min_n:max_rows, ]
+  } else {
     data <- get_details(x, max_n = max_n)
   }
   
-  max_rows <- ifelse(length(which(data$Lower.CL > power_lim)) > 0,
-    min(which(data$Lower.CL > power_lim)), max_n)
-  
-  data <- data[min_n:max_rows, ]
   data$Rating <- factor(data$Rating, levels = c("Too Low", "Uncertain", "Sufficient"))
   n_unc <- data$n[which(data$Rating == "Uncertain")]
   low_bound <- min(n_unc)
