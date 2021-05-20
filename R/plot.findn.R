@@ -39,11 +39,7 @@
 #' plot(res.ttest, power_lim = 0.95)
 plot.findn <- function(x, min_n = 1, max_n = NULL, power_lim = 0.95, ...) {
   if(is.null(max_n)) {
-    max_n <- min(3 * x$sample_size, 10000)
-    data <- get_details(x, max_n = max_n)
-    if(length(which(data$Lower.CL > power_lim)) == 0) {
-      max_n <- max_n * 10
-    }
+    max_n <- 5 * get_est(x$fit, power_lim)
     data <- get_details(x, max_n = max_n)
     max_rows <- ifelse(length(which(data$Lower.CL > power_lim)) > 0,
       min(which(data$Lower.CL > power_lim)), max_n)

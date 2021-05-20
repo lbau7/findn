@@ -125,8 +125,9 @@ findn <- function(fun, targ, start, k = 25, init_evals = 100, r = 4,
 
   fit <- fit_mod(
     x = xcur, y = ycur, k = k, weights = rep(1, length(xcur)),
-    start_par = init_par, mu_alpha = stats::qnorm(alpha), sd_alpha = sqrt(var_alpha),
-    mu_logbeta = par_logbeta[1], sd_logbeta = par_logbeta[2]
+    start_par = init_par, mu_alpha = stats::qnorm(alpha), 
+    sd_alpha = sqrt(var_alpha), mu_logbeta = par_logbeta[1], 
+    sd_logbeta = par_logbeta[2]
     )
 
   xest[1] <- ceiling(get_est(fit = fit, ttarg = ttarg))
@@ -142,7 +143,7 @@ findn <- function(fun, targ, start, k = 25, init_evals = 100, r = 4,
     if (sum(ycur) == length(ycur)) {
       new_x <- pmax(round(c(min(xcur) / 2, min(xcur) / 4)), 2)
     } else if (sum(ycur) == 0) {
-      new_x <- pmax(round(c(max(xcur) * 2, max(xcur) * 4)), 2)
+      # new_x <- pmax(round(c(max(xcur) * 2, max(xcur) * 4)), 2)
     } else {
       tycurpred <- predict_fit(fit, xcur, se = FALSE)
       weights <- wgts(typred = tycurpred, ttarg = ttarg)
