@@ -4,7 +4,14 @@
 \alias{print.findn}
 \title{Printing a findn Object}
 \usage{
-\method{print}{findn}(x, details = c("low", "high"), max_n = NULL, digits = 3, ...)
+\method{print}{findn}(
+  x,
+  details = c("low", "high"),
+  max_n = NULL,
+  digits = 3,
+  invisible = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{Object of class \code{findn}.}
@@ -16,6 +23,8 @@ are shown for all sample sizes from 1 to \code{max_n} if \code{max_n} is non-\co
 See also 'Details'.}
 
 \item{digits}{Number of decimal places to be shown.}
+
+\item{invisible}{Whether the results should be printed or only assigned.}
 
 \item{...}{Further arguments.}
 }
