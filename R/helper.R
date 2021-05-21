@@ -210,7 +210,7 @@ get_details <- function(out, details = c("high", "low"), max_n = NULL) {
     )
     
     if(is.null(max_n)) {
-      if (length(print.df$Rating == "Uncertain") > 0) {
+      if (sum(print.df$Rating == "Uncertain") > 0) {
         lower.unc <- min(which(print.df$Rating == "Uncertain"))
         upper.unc <- max(which(print.df$Rating == "Uncertain"))
         print.df <- print.df[(lower.unc - 3):(upper.unc + 3), ]
