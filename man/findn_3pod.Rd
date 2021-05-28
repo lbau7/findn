@@ -9,7 +9,8 @@ findn_3pod(
   targ,
   start,
   k = 50,
-  init_evals = 100,
+  e1 = 100,
+  e2 = 400,
   max_evals = 1000,
   alpha = 0.05,
   alternative = c("two.sided", "one.sided"),
@@ -29,9 +30,9 @@ iterations.}
 
 \item{k}{How often the target function is evaluated at each design point.}
 
-\item{init_evals}{How many evaluations the first model is based on.}
+\item{e1}{Number of function evaluations that is used for the first phase.}
 
-\item{max_evals}{The maximum number of simulations.}
+\item{e2}{Number of function evaluations that is used for the second phase.}
 
 \item{alpha}{The significance level of the underlying test. This is only
 used when a fixed-intercept model is calculated as a fallback when
