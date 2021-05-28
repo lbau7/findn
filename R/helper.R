@@ -105,7 +105,7 @@ predict_fit <- function(fit, new_n, se) {
 
 wgts <- function (typred, ttarg) {
   dists <- abs(typred - ttarg)
-  if (sum(dists < 1 & dists > 1e-04) < 3) {
+  if (sum(dists < 1) < 3) {
     return(rep(1, length(typred)))
   }
   (1 - dists^3)^3 * (dists < 1)
