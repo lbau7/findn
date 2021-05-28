@@ -7,7 +7,7 @@
 #' @template targ
 #' @template start
 #' @template k
-#' @param max_evals
+#' @template max_evals
 #' @param e1 Number of function evaluations that is used for the first phase.
 #' @param e2 Number of function evaluations that is used for the second phase.
 #' @param alpha The significance level of the underlying test. This is only

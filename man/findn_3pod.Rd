@@ -34,6 +34,8 @@ iterations.}
 
 \item{e2}{Number of function evaluations that is used for the second phase.}
 
+\item{max_evals}{The maximum number of simulations.}
+
 \item{alpha}{The significance level of the underlying test. This is only
 used when a fixed-intercept model is calculated as a fallback when
 the \code{start} is way off.}
