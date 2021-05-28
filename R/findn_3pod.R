@@ -7,8 +7,8 @@
 #' @template targ
 #' @template start
 #' @template k
-#' @template init_evals
-#' @template max_evals
+#' @param e1 Number of function evaluations that is used for the first phase.
+#' @param e2 Number of function evaluations that is used for the second phase.
 #' @param alpha The significance level of the underlying test. This is only
 #'   used when a fixed-intercept model is calculated as a fallback when
 #'   the \code{start} is way off. 
@@ -21,7 +21,7 @@
 #' @template dotdotdot
 #'
 #' @export
-findn_3pod <- function(fun, targ, start, k = 50, init_evals = 100, 
+findn_3pod <- function(fun, targ, start, k = 50, e1 = 100, e2 = 400,
                        max_evals = 1000, 
                        alpha = 0.05, alternative = c("two.sided", "one.sided"),
                        min_x = 2, max_x = 1000, ...) {
@@ -31,10 +31,9 @@ findn_3pod <- function(fun, targ, start, k = 50, init_evals = 100,
   func <- function(x) fun(n = x, k = k, ...)
   ttarg <- stats::qnorm(targ)
   n <- floor(max_evals / k)
-  n1 <- init_evals / k
-  n2 <- ifelse(max_evals == 250, (max_evals * 0.48) / (2 * k), 
-    (max_evals * 0.4) / (2 * k))
-  n3 <- n - n1 - 2 * n2
+  n1 <- floor(e1 / k)
+  n2 <- floor(e2 / (2 * k))
+  n3 <- floor(n - n1 - 2 * n2)
   
   # Phase 1
   x <- pmax(round(seq(from = 0.25 * start, to = 4 * start, length.out = n1)),
