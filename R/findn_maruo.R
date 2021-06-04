@@ -11,6 +11,11 @@
 #' @template k
 #' @template dotdotdot
 #'
+#' @references Maruo, K., Tada, K., Ishil, R. and Gosho M. (2018) An
+#'   Efficient Procedure for Calculating Sample Size Through
+#'   Statistical Simulations, Statistics in Biopharmaceutical Research
+#'   10, 1-8.  \doi{https://doi.org/10.1080/19466315.2017.1349689}
+#'
 #' @export
 findn_maruo <- function(fun, targ, start = 10, k = 100, ...) {
   if(targ == 0.8) {
