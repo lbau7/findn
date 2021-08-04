@@ -1,8 +1,10 @@
-#' Find the Sample Size
+#' Find the Sample Size for a trial based repeated simulation using a
+#' model based approach
 #'
-#' \code{findn} estimates the sample size for a function that returns a 
-#' simulated power value based on repeated simulations using a model based 
-#' approach.
+#' \code{findn} estimates the sample size to achieve a pre-defined
+#' power, when the power can only be evaluated using
+#' simulations. \code{findn} uses a model-based approach for this
+#' purpose.
 #'
 #' @template fun
 #' @template targ
@@ -48,7 +50,7 @@
 #' size - \code{start}. The variances of the prior distributions can be
 #' adjusted using the arguments \code{var_alpha} and \code{var_beta}.
 #' 
-#' There are four different stopping criterions. When \code{stop = "evals"} 
+#' There are four different stopping criteria. When \code{stop = "evals"} 
 #' the algorithm stops when the target function was evaluated \code{max_evals}
 #' times. When \code{stop = "power_ci"}the algorithm stops when the \code{level}
 #' percent confidence interval of the predicted power at the current sample 
@@ -59,7 +61,7 @@
 #' all sample sizes for which the \code{level} percent confidence interval for
 #' the predicted power contains \code{targ}. When \code{stop = "rel_unc"} the
 #' algorithm stops when the relative uncertainty range is smaller than
-#' \code{rel_unc_tol}. The relative uncertainty rangeis defined as the greatest
+#' \code{rel_unc_tol}. The relative uncertainty range is defined as the greatest
 #' integer in the uncertainty set minus the smallest integer in the uncertainty
 #' set, divided by the smallest number in the uncertainty set. The algorithm also 
 #' stops when \code{stop} is either \code{"power_ci"}, \code{"abs_unc"} or

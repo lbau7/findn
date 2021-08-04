@@ -1,1 +1,1 @@
-#' @param k How often the target function is evaluated at each design point.
+#' @param k Number of trial simulations to use in \code{fun} to estimate the power.
