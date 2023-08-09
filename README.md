@@ -2,8 +2,7 @@
 <!-- README.md is generated from README.Rmd. -->
 <!-- badges: start -->
 
-[![Build
-Status](https://travis-ci.com/lbau7/findn.svg?branch=master)](https://travis-ci.com/lbau7/findn)
+[![R-CMD-check](https://github.com/lbau7/findn/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/lbau7/findn/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/lbau7/findn/branch/master/graph/badge.svg)](https://codecov.io/gh/lbau7/findn?branch=master)
 <!-- badges: end -->
@@ -88,8 +87,8 @@ res_bh
 # [1] "Normal completion"
 ```
 
-Point\_Estimate\_n corresponds to the smallest sample size for which the
-estimated power exceeds the target power, while Minimum\_Sufficient\_n
+Point_Estimate_n corresponds to the smallest sample size for which the
+estimated power exceeds the target power, while Minimum_Sufficient_n
 corresponds to the smallest sample size for which the lower limit of the
 95% confidence interval for the estimated power exceeds the target
 power. If a different level for the confidence interval is desired, the

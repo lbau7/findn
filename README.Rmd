@@ -7,11 +7,9 @@ editor_options:
 <!-- README.md is generated from README.Rmd. -->
 
 <!-- badges: start -->
-[![Build Status](https://travis-ci.com/lbau7/findn.svg?branch=master)](https://travis-ci.com/lbau7/findn) 
+[![R-CMD-check](https://github.com/lbau7/findn/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/lbau7/findn/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/lbau7/findn/branch/master/graph/badge.svg)](https://codecov.io/gh/lbau7/findn?branch=master)
 <!-- badges: end -->
-
-
 
 # Introduction
 
