@@ -1,7 +1,7 @@
-#' Find the Sample Size Using the Robbing-Monro Algorithm
+#' Find the Sample Size Using the Robbins-Monro Algorithm
 #' 
-#' \code{findn_rm} estimates the sample size for a certain target function
-#' using a modified version of the Robbins-Monro algorithm.
+#' \code{findn_rm} estimates the sample size to achieve a specified
+#' power using a modified version of the Robbins-Monro algorithm.
 #'
 #' @template fun
 #' @template targ
@@ -10,7 +10,7 @@
 #' @template max_evals
 #' @param j A tuning parameter for choosing the step size. In the original
 #'   Robbins-Monro algorithm j is 1.
-#' @param avg A tuning parameter for the averaged veresion of the Robbins-Monro
+#' @param avg A tuning parameter for the averaged version of the Robbins-Monro
 #'   algorithm. The sample size estimate is the average of the last avg% of
 #'   design points in the algorithm.
 #' @template dotdotdot

@@ -21,6 +21,11 @@
 #'   the estimated sample size after the second phase is very large.
 #' @template dotdotdot
 #'
+#' @references Wu, C.F.J. and Tian, Y. (2014) Three-phase optimal
+#'   design of sensitivity experiments. Journal of Statistical
+#'   Planning and Inference, 149,
+#'   1-15. \doi{https://doi.org/10.1016/j.jspi.2013.10.007}
+#' 
 #' @export
 findn_3pod <- function(fun, targ, start, k = 50, e1 = 100, e2 = 400,
                        max_evals = 1000, 
