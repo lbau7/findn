@@ -91,7 +91,7 @@
 #' 
 #' res_ttest <- findn(fun = ttest, targ = 0.8, k = 25, start = 100, 
 #'   init_evals = 100, r = 4, stop = "evals", max_evals = 2000, 
-#'   level = 0.05, var_alpha = 0.05, var_beta = 1, alpha = 0.025, 
+#'   level = 0.05, var_alpha = 1, var_beta = 0.1, alpha = 0.025, 
 #'   alternative = "one.sided", verbose = FALSE)
 findn <- function(fun, targ, start, k = 25, init_evals = 100, r = 4,
                   stop = c("evals", "power_ci", "abs_unc", "rel_unc"),
@@ -218,6 +218,7 @@ findn <- function(fun, targ, start, k = 25, init_evals = 100, r = 4,
   out <- list(
     sample_size = root,
     fit = fit,
+    all_evals = x,
     targ = targ,
     level = level,
     exit.mes = exit.mes
