@@ -42,17 +42,20 @@ test_that("stopping rules of findn work", {
     mean(pvals <= 0.05)
   }
   
+  # Power CI
   res_bll1 <- suppressWarnings(findn(fun = fun_ttest, targ = 0.8, 
     start = 100, stop = "power_ci", power_ci_tol = 0.02))
   det_bll1 <- print(res_bll1, details = "high", invisible = TRUE)$Details
   len_bll1 <- diff(as.numeric(det_bll1[which(det_bll1$n == 
       res_bll1$sample_size), c(2, 4)]))
   
+  # Absolute Uncertainty
   res_bll2 <- suppressWarnings(findn(fun = fun_ttest, targ = 0.8, 
     start = 100, stop = "abs_unc", abs_unc_tol = 10))
   det_bll2 <- print(res_bll2, details = "high", invisible = TRUE)$Details
   len_bll2 <- nrow(det_bll2[which(det_bll2$Ratin == "Uncertain"), ])
   
+  # Relative Uncertainty
   res_bll3 <- suppressWarnings(findn(fun = fun_ttest, targ = 0.8, 
     start = 100, stop = "rel_unc", rel_unc_tol = 0.1))
   det_bll3 <- print(res_bll3, details = "high", invisible = TRUE)$Details
@@ -62,9 +65,32 @@ test_that("stopping rules of findn work", {
       "Uncertain")), 1])
   len_bll3 <- (max_bll3 - min_bll3) / min_bll3
   
+  # Relative Uncertainty - No Uncertain Sample Sizes
+  ttest <- function(mu1 = 0, mu2 = 1, sd = 0.5, alpha = 0.025, n, k) {
+    sample1 <- matrix(rnorm(n = ceiling(n) * k, mean = mu1, sd = sd),
+      ncol = k)
+    mean1 <- apply(sample1, 2, mean)
+    sd1_hat <- apply(sample1, 2, sd)
+    sample2 <- matrix(rnorm(n = ceiling(n) * k, mean = mu2, sd = sd),
+      ncol = k)
+    mean2 <- apply(sample2, 2, mean)
+    sd2_hat <- apply(sample2, 2, sd)
+    sd_hat <- sqrt((sd1_hat^2 + sd2_hat^2) / 2)
+    teststatistic <- (mean1 - mean2) / (sd_hat * sqrt(2 / n))
+    crit <- qt(1 - alpha, 2*n - 2)
+    return(mean(teststatistic < -crit))
+  }
+  
+  set.seed(9135)
+  res_bll4 <- suppressWarnings(findn(ttest, targ = 0.8, stop = "rel_unc", 
+    max_evals = 10000, start = 100))
+  det_bll4 <- print(res_bll4, details = "high", invisible = TRUE)$Details
+  len <- nrow(det_bll4[which(det_bll4$Rating == "Uncertain"), ])
+  
   expect_lt(len_bll1, 0.02)
   expect_lte(len_bll2, 10)
   expect_lte(len_bll3, 0.1)
+  expect_equal(len, 0)
 })
 
 test_that("findn returns estimate after every iteration when verbose = TRUE", {
