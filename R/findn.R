@@ -21,8 +21,8 @@
 #' @param power_ci_tol Tolerance parameter if \code{stop = "power_ci"}.
 #' @param abs_unc_tol Tolerance parameter if \code{stop = "abs_unc"}.
 #' @param rel_unc_tol Tolerance parameter if \code{stop is "rel_unc"}.
-#' @param var_alpha Variance of the prior distribution for the intercept.
-#' @param var_beta Variance of the prior distribution for the slope.
+#' @param var_a Variance of the prior distribution for the intercept.
+#' @param var_b Variance of the prior distribution for the slope.
 #' @param alpha The significance level of the underlying test. This is used to 
 #'   compute the mean of the prior distribution of the intercept.
 #' @param alternative Either "two.sided" or "one.sided". This is only used to
@@ -48,7 +48,7 @@
 #' underlying test and the \code{alternative}. The mean of the prior
 #' distribution of the slope is computed from the initial guess for the sample
 #' size - \code{start}. The variances of the prior distributions can be
-#' adjusted using the arguments \code{var_alpha} and \code{var_beta}.
+#' adjusted using the arguments \code{var_a} and \code{var_b}.
 #' 
 #' There are four different stopping criteria. When \code{stop = "evals"} 
 #' the algorithm stops when the target function was evaluated \code{max_evals}
@@ -91,13 +91,13 @@
 #' 
 #' res_ttest <- findn(fun = ttest, targ = 0.8, k = 25, start = 100, 
 #'   init_evals = 100, r = 4, stop = "evals", max_evals = 2000, 
-#'   level = 0.05, var_alpha = 1, var_beta = 0.1, alpha = 0.025, 
+#'   level = 0.05, var_a = 1, var_b = 0.1, alpha = 0.025, 
 #'   alternative = "one.sided", verbose = FALSE)
 findn <- function(fun, targ, start, k = 25, init_evals = 100, r = 4,
                   stop = c("evals", "power_ci", "abs_unc", "rel_unc"),
                   max_evals = 2000, level = 0.05,
                   power_ci_tol = 0.02, abs_unc_tol = 10, rel_unc_tol = 0.1,
-                  var_alpha = 0.05, var_beta = 1,
+                  var_a = 0.05, var_b = 1,
                   alpha = 0.05, alternative = c("two.sided", "one.sided"),
                   min_x = 2, verbose = FALSE, ...) {
   x <- y <- xest <- numeric()
@@ -121,15 +121,15 @@ findn <- function(fun, targ, start, k = 25, init_evals = 100, r = 4,
   ycur <- y[1:start_no]
   xcur <- x[1:start_no]
   init_par <- get_init_par(x = xcur, y = ycur, k = k, alpha = alpha)
-  par_logbeta <- get_par_logbeta(
-    n = start, alpha = alpha, targ = targ, var_beta = var_beta
+  par_logb <- get_par_logb(
+    n = start, alpha = alpha, targ = targ, var_b = var_b
     )
 
   fit <- fit_mod(
     x = xcur, y = ycur, k = k, weights = rep(1, length(xcur)),
-    start_par = init_par, mu_alpha = stats::qnorm(alpha), 
-    sd_alpha = sqrt(var_alpha), mu_logbeta = par_logbeta[1], 
-    sd_logbeta = par_logbeta[2]
+    start_par = init_par, mu_a = stats::qnorm(alpha), 
+    sd_a = sqrt(var_a), mu_logb = par_logb[1], 
+    sd_logb = par_logb[2]
     )
 
   xest[1] <- ceiling(get_est(fit = fit, ttarg = ttarg))
@@ -151,8 +151,8 @@ findn <- function(fun, targ, start, k = 25, init_evals = 100, r = 4,
       weights <- wgts(typred = tycurpred, ttarg = ttarg)
       fit <- fit_mod(
         x = xcur, y = ycur, k = k, weights = weights, start_par = fit$cf,
-        mu_alpha = stats::qnorm(alpha), sd_alpha = sqrt(var_alpha),
-        mu_logbeta = par_logbeta[1], sd_logbeta = par_logbeta[2]
+        mu_a = stats::qnorm(alpha), sd_a = sqrt(var_a),
+        mu_logb = par_logb[1], sd_logb = par_logb[2]
         )
       xest[i] <- get_est(fit, ttarg)
       
@@ -198,8 +198,8 @@ findn <- function(fun, targ, start, k = 25, init_evals = 100, r = 4,
       weights <- wgts(typred = tycurpred, ttarg = ttarg)
       fit <- fit_mod(
         x = xcur, y = ycur, k = k, weights = weights, start_par = fit$cf,
-        mu_alpha = stats::qnorm(alpha), sd_alpha = sqrt(var_alpha),
-        mu_logbeta = par_logbeta[1], sd_logbeta = par_logbeta[2]
+        mu_a = stats::qnorm(alpha), sd_a = sqrt(var_a),
+        mu_logb = par_logb[1], sd_logb = par_logb[2]
       )
       xest[i+1] <- get_est(fit, ttarg)
     }

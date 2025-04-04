@@ -3,7 +3,5 @@
 S3method(plot,findn)
 S3method(print,findn)
 export(findn)
-export(findn_3pod)
 export(findn_maruo)
-export(findn_rm)
 importFrom(rlang,.data)

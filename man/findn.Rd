@@ -2,7 +2,8 @@
 % Please edit documentation in R/findn.R
 \name{findn}
 \alias{findn}
-\title{Find the Sample Size}
+\title{Find the Sample Size for a trial based repeated simulation using a
+model based approach}
 \usage{
 findn(
   fun,
@@ -17,8 +18,8 @@ findn(
   power_ci_tol = 0.02,
   abs_unc_tol = 10,
   rel_unc_tol = 0.1,
-  var_alpha = 0.05,
-  var_beta = 1,
+  var_a = 0.05,
+  var_b = 1,
   alpha = 0.05,
   alternative = c("two.sided", "one.sided"),
   min_x = 2,
@@ -35,7 +36,7 @@ iterations.}
 
 \item{start}{An initial guess for the sample size.}
 
-\item{k}{How often the target function is evaluated at each design point.}
+\item{k}{Number of trial simulations to use in \code{fun} to estimate the power.}
 
 \item{init_evals}{How many evaluations the first model is based on.}
 
@@ -56,9 +57,9 @@ for the confidence intervals that are printed if \code{verbose = TRUE}.}
 
 \item{rel_unc_tol}{Tolerance parameter if \code{stop is "rel_unc"}.}
 
-\item{var_alpha}{Variance of the prior distribution for the intercept.}
+\item{var_a}{Variance of the prior distribution for the intercept.}
 
-\item{var_beta}{Variance of the prior distribution for the slope.}
+\item{var_b}{Variance of the prior distribution for the slope.}
 
 \item{alpha}{The significance level of the underlying test. This is used to 
 compute the mean of the prior distribution of the intercept.}
@@ -79,9 +80,10 @@ every iteration.}
   See also \code{\link{print.findn}}.
 }
 \description{
-\code{findn} estimates the sample size for a function that returns a 
-simulated power value based on repeated simulations using a model based 
-approach.
+\code{findn} estimates the sample size to achieve a pre-defined
+power, when the power can only be evaluated using
+simulations. \code{findn} uses a model-based approach for this
+purpose.
 }
 \details{
 \code{findn} estimates the sample size for a target function that 
@@ -99,9 +101,9 @@ intercept is computed from the significance level \code{alpha} of the
 underlying test and the \code{alternative}. The mean of the prior
 distribution of the slope is computed from the initial guess for the sample
 size - \code{start}. The variances of the prior distributions can be
-adjusted using the arguments \code{var_alpha} and \code{var_beta}.
+adjusted using the arguments \code{var_a} and \code{var_b}.
 
-There are four different stopping criterions. When \code{stop = "evals"} 
+There are four different stopping criteria. When \code{stop = "evals"} 
 the algorithm stops when the target function was evaluated \code{max_evals}
 times. When \code{stop = "power_ci"}the algorithm stops when the \code{level}
 percent confidence interval of the predicted power at the current sample 
@@ -112,7 +114,7 @@ the number of sample sizes in the uncertainty set smaller than
 all sample sizes for which the \code{level} percent confidence interval for
 the predicted power contains \code{targ}. When \code{stop = "rel_unc"} the
 algorithm stops when the relative uncertainty range is smaller than
-\code{rel_unc_tol}. The relative uncertainty rangeis defined as the greatest
+\code{rel_unc_tol}. The relative uncertainty range is defined as the greatest
 integer in the uncertainty set minus the smallest integer in the uncertainty
 set, divided by the smallest number in the uncertainty set. The algorithm also 
 stops when \code{stop} is either \code{"power_ci"}, \code{"abs_unc"} or
@@ -138,6 +140,6 @@ ttest <- function(n, k, mu1 = 0, mu2 = 1, sd = 2) {
 
 res_ttest <- findn(fun = ttest, targ = 0.8, k = 25, start = 100, 
   init_evals = 100, r = 4, stop = "evals", max_evals = 2000, 
-  level = 0.05, var_alpha = 0.05, var_beta = 1, alpha = 0.025, 
+  level = 0.05, var_a = 1, var_b = 0.1, alpha = 0.025, 
   alternative = "one.sided", verbose = FALSE)
 }

@@ -6,81 +6,30 @@ get_par_maruo <- function(x, y, k) {
   return(cf)
 }
 
-# Helper functions for findn_3pod
-transf_y <- function(x) {
-  if (x == 0) {
-    stats::qnorm(0.001) 
-  } else if (x == 1) {
-    stats::qnorm(0.999) 
-  } else {
-    stats::qnorm(x)
-  }
-}
-
-fit_mod_3pod <- function (x, y, k, alpha) {
-  ymat <- cbind(y, 1 - y) * k
-  off.par <- rep(stats::qnorm(alpha), length(x))
-  fit <- stats::glm(ymat ~ x, family = stats::binomial("probit"))
-  if(stats::coef(fit)[2] < 0.0001) {
-    fit <- stats::glm(ymat ~ x - 1 + offset(off.par),
-      family = stats::binomial("probit"))
-  }
-  return(fit)
-}
-
-fit_mod_final_3pod <- function (x, y, k) {
-  ymat <- cbind(y, 1 - y) * k
-  fit <- stats::glm(ymat ~ x, family = stats::binomial("probit"))
-  return(fit)
-}
-
-get_new_points_3pod <- function(fit, alpha) {
-  cf <- stats::coef(fit)
-  if (length(cf) == 1) cf <- c(stats::qnorm(alpha), cf)
-  xLB <- floor((stats::qnorm(0.128) - cf[1]) / cf[2])
-  xUB <- ceiling((stats::qnorm(0.872) - cf[1]) / cf[2])
-  c(xLB, xUB)
-}
-
-get_final_point_3pod <- function(fit, ttarg) {
-  cf <- stats::coef(fit)
-  round((ttarg - cf[1]) / cf[2])
-}
-
-# Helper function for findn_rm
-get_b <- function(x, y) {
-  rm.fit <- stats::lm(y ~ x)
-  b <- stats::coef(rm.fit)[2]
-  unname(ifelse(b < 0.0001, 0.0001, b))
-}
-
 # Helper functions for findn
-log_post <- function(par, suc, fail, n, w,
-  mu_alpha, sd_alpha, mu_logbeta, sd_logbeta) {
-  alpha <- par[1]
-  beta <- par[2]
-  p_est <- stats::pnorm(alpha + beta * sqrt(n))
+log_post <- function(par, suc, fail, n, w, mu_a, sd_a, mu_logb, sd_logb) {
+  a <- par[1]
+  b <- par[2]
+  p_est <- stats::pnorm(a + b * sqrt(n))
   loglik <- sum(w * stats::dbinom(suc, suc + fail, p_est, log = TRUE))
-  logprior <- stats::dnorm(alpha, mu_alpha, sd_alpha, log = TRUE)
-  logprior <- logprior + stats::dlnorm(beta, mu_logbeta, sd_logbeta, log = TRUE)
+  logprior <- stats::dnorm(a, mu_a, sd_a, log = TRUE)
+  logprior <- logprior + stats::dlnorm(b, mu_logb, sd_logb, log = TRUE)
   - loglik - logprior
 }
 
-fit_mod <- function(x, y, k, weights, start_par,
-  mu_alpha, sd_alpha, mu_logbeta, sd_logbeta) {
+fit_mod <- function(x, y, k, weights, start_par, mu_a, sd_a, mu_logb, sd_logb) {
   suc <- y * k
   fail <- (1 - y) * k
   
   opt <- stats::optim(
     start_par, log_post, suc = suc, fail = fail, n = x, w = weights,
-    mu_alpha = mu_alpha, sd_alpha = sd_alpha,
-    mu_logbeta = mu_logbeta, sd_logbeta = sd_logbeta
+    mu_a = mu_a, sd_a = sd_a, mu_logb = mu_logb, sd_logb = sd_logb
   )
   
   cf <- opt$par
   vcov <- try(solve(stats::optimHess(
-    cf, log_post, suc=suc, fail=fail, n=x, w=weights, mu_alpha=mu_alpha,
-    sd_alpha=sd_alpha, mu_logbeta=mu_logbeta, sd_logbeta=sd_logbeta
+    cf, log_post, suc = suc, fail = fail, n = x, w = weights, mu_a = mu_a,
+    sd_a = sd_a, mu_logb = mu_logb, sd_logb = sd_logb
   )), silent = TRUE)
   
   if (class(vcov)[1] == "try-error") {
@@ -160,16 +109,16 @@ get_init_par <- function(x, y, k, alpha) {
     ymat ~ -1 + sqrt(x) + offset(off.par),
     family = stats::binomial("probit")
   )
-  beta <- ifelse(stats::coef(init.mod) < 0, 0.1, stats::coef(init.mod))
-  c(stats::qnorm(alpha), beta)
+  b <- ifelse(stats::coef(init.mod) < 0, 0.1, stats::coef(init.mod))
+  c(stats::qnorm(alpha), b)
 }
 
-get_par_logbeta <- function(n, alpha, targ, var_beta) {
-  mu_beta <- (stats::qnorm(targ) - stats::qnorm(alpha)) / sqrt(n)
-  mu_logbeta <- log(mu_beta^2 / sqrt(var_beta + mu_beta^2))
-  sd_logbeta <- sqrt(log(var_beta / mu_beta^2 + 1))
-  par_logbeta <- c(mu_logbeta, sd_logbeta)
-  par_logbeta
+get_par_logb <- function(n, alpha, targ, var_b) {
+  mu_b <- (stats::qnorm(targ) - stats::qnorm(alpha)) / sqrt(n)
+  mu_logb <- log(mu_b^2 / sqrt(var_b + mu_b^2))
+  sd_logb <- sqrt(log(var_b / mu_b^2 + 1))
+  par_logb <- c(mu_logb, sd_logb)
+  par_logb
 }
 
 get_est <- function(fit, ttarg) {
@@ -178,7 +127,7 @@ get_est <- function(fit, ttarg) {
 }
 
 get_new_points <- function(fit, xest, targ) {
-  pred <- predict_fit(fit, xest, se=T)
+  pred <- predict_fit(fit, xest, se = TRUE)
   cf <- fit$cf
   
   xLB <- floor(((pred$pred - pred$se - cf[1]) / cf[2])^2)

@@ -16,7 +16,7 @@ iterations.}
 \item{start}{Starting value for the algorithm. Maruo et al. suggest to
 use 10.}
 
-\item{k}{How often the target function is evaluated at each design point.}
+\item{k}{Number of trial simulations to use in \code{fun} to estimate the power.}
 
 \item{...}{Further optional arguments.}
 }
@@ -24,4 +24,10 @@ use 10.}
 \code{findn_maruo} estimates the sample size for a certain target function 
 based on repeated simulations using a model based approach proposed by Maruo 
 et al. (2018).
+}
+\references{
+Maruo, K., Tada, K., Ishil, R. and Gosho M. (2018) An
+  Efficient Procedure for Calculating Sample Size Through
+  Statistical Simulations, Statistics in Biopharmaceutical Research
+  10, 1-8.  \doi{https://doi.org/10.1080/19466315.2017.1349689}
 }

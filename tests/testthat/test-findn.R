@@ -120,7 +120,7 @@ test_that("findn stops when it's supposed to", {
   expect_error(findn(fun = function(n, k) n, targ = 0.8, start = 100,
     k = 50, max_evals = 100))
   expect_error(suppressWarnings(findn(fun = fun_ttest, targ = 0.8,
-    start = 5000, var_beta = 1000, var_alpha = 1000)))
+    start = 5000, var_b = 1000, var_a = 1000)))
 })
 
 test_that("findn shows correct exit message", {
