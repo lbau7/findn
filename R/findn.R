@@ -97,7 +97,7 @@ findn <- function(fun, targ, start, k = 25, init_evals = 100, r = 4,
                   stop = c("evals", "power_ci", "abs_unc", "rel_unc"),
                   max_evals = 2000, level = 0.05,
                   power_ci_tol = 0.02, abs_unc_tol = 10, rel_unc_tol = 0.1,
-                  var_a = 0.05, var_b = 1,
+                  var_a = 1, var_b = 1,
                   alpha = 0.05, alternative = c("two.sided", "one.sided"),
                   min_x = 2, verbose = FALSE, ...) {
   x <- y <- xest <- numeric()
