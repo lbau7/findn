@@ -50,7 +50,7 @@ findn_maruo <- function(fun, targ, start = 10, k = 100, ...) {
     if (pow_loop > boundary) {
       counter <- counter + 1
     }
-    if ((n_loop > 100) & (pow_loop < 0.3)) {
+    if ((n_loop => 100) & (pow_loop < 0.3)) {
       step <- 10
     }
   }
