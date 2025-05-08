@@ -18,7 +18,7 @@ findn(
   power_ci_tol = 0.02,
   abs_unc_tol = 10,
   rel_unc_tol = 0.1,
-  var_a = 0.05,
+  var_a = 1,
   var_b = 1,
   alpha = 0.05,
   alternative = c("two.sided", "one.sided"),
