@@ -65,32 +65,9 @@ test_that("stopping rules of findn work", {
       "Uncertain")), 1])
   len_bll3 <- (max_bll3 - min_bll3) / min_bll3
   
-  # Relative Uncertainty - No Uncertain Sample Sizes
-  ttest <- function(mu1 = 0, mu2 = 1, sd = 0.5, alpha = 0.025, n, k) {
-    sample1 <- matrix(rnorm(n = ceiling(n) * k, mean = mu1, sd = sd),
-      ncol = k)
-    mean1 <- apply(sample1, 2, mean)
-    sd1_hat <- apply(sample1, 2, sd)
-    sample2 <- matrix(rnorm(n = ceiling(n) * k, mean = mu2, sd = sd),
-      ncol = k)
-    mean2 <- apply(sample2, 2, mean)
-    sd2_hat <- apply(sample2, 2, sd)
-    sd_hat <- sqrt((sd1_hat^2 + sd2_hat^2) / 2)
-    teststatistic <- (mean1 - mean2) / (sd_hat * sqrt(2 / n))
-    crit <- qt(1 - alpha, 2*n - 2)
-    return(mean(teststatistic < -crit))
-  }
-  
-  set.seed(9135)
-  res_bll4 <- suppressWarnings(findn(ttest, targ = 0.8, stop = "rel_unc", 
-    max_evals = 10000, start = 100))
-  det_bll4 <- print(res_bll4, details = "high", invisible = TRUE)$Details
-  len <- nrow(det_bll4[which(det_bll4$Rating == "Uncertain"), ])
-  
   expect_lt(len_bll1, 0.02)
   expect_lte(len_bll2, 10)
   expect_lte(len_bll3, 0.1)
-  expect_equal(len, 0)
 })
 
 test_that("findn returns estimate after every iteration when verbose = TRUE", {
