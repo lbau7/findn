@@ -4,7 +4,7 @@ Title: Simulation Based Sample Size Estimation
 Version: 0.1.0
 Authors@R: as.person(c(
     "Lukas Baumann <baumann@imbi.uni-heidelberg.de> [aut, cre]", 
-    "Björn Bornkamp [aut]"
+    "Björn Bornkamp [ctb]"
     ))
 Maintainer: Lukas Baumann <baumann@imbi.uni-heidelberg.de>
 Description: Estimates the sample size for a test or a trial based on repeated simulation using a model based approach.
