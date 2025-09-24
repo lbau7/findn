@@ -2,10 +2,16 @@ Package: findn
 Type: Package
 Title: Simulation Based Sample Size Estimation
 Version: 0.1.0
-Authors@R: as.person(c(
-    "Lukas Baumann <baumann@imbi.uni-heidelberg.de> [aut, cre]", 
-    "Björn Bornkamp [ctb]"
-    ))
+Authors@R:
+	c(person(given = "Lukas",
+		family = "Baumann", 
+		role = c("aut", "cre"),
+		email = "baumann@imbi.uni-heidelberg.de",
+		comment = c(ORCID = "0000-0001-7931-7470")),
+	person(given = "Björn",
+		family = "Bornkamp", 
+		role = c("ctb"),
+		comment = c(ORCID = "0000-0002-6294-8185")))
 Maintainer: Lukas Baumann <baumann@imbi.uni-heidelberg.de>
 Description: Estimates the sample size for a test or a trial based on repeated simulation using a model based approach.
 Imports: 
