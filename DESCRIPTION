@@ -18,7 +18,7 @@ Imports:
   ggplot2,
   rlang,
   scales
-License: GPL-3
+License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.3
