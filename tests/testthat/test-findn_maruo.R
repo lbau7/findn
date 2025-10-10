@@ -14,8 +14,8 @@ test_that("findn_maruo finds approximately the correct sample size", {
   n_true2 <- ceiling(power.t.test(delta = 5, sd = 10, type = "one.sample", 
     power = 0.9)$n)
   
-  expect_equal(res_maruo1$Point_Estimate_n, n_true1, tol = 2)
-  expect_equal(res_maruo2$Point_Estimate_n, n_true2, tol = 2)
+  expect_equal(res_maruo1$Point_Estimate_n, n_true1, tolerance = 2)
+  expect_equal(res_maruo2$Point_Estimate_n, n_true2, tolerance = 2)
 })
 
 test_that("findn_maruo stop when power is neither 0.8 nor 0.9", {

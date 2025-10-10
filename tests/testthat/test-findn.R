@@ -15,8 +15,8 @@ test_that("findn finds approximately the correct sample size", {
     power = 0.9)$n)
   
   expect_equal(length(res_bll1$all_evals) * 25, 2000)
-  expect_equal(res_bll1$sample_size, n_true1, tol = 2)
-  expect_equal(res_bll2$sample_size, n_true2, tol = 2)
+  expect_equal(res_bll1$sample_size, n_true1, tolerance = 2)
+  expect_equal(res_bll2$sample_size, n_true2, tolerance = 2)
 })
   
 test_that("findn works when the starting value is way off", {
@@ -31,7 +31,7 @@ test_that("findn works when the starting value is way off", {
   n_true1 <- ceiling(power.t.test(delta = 5, sd = 10, type = "one.sample", 
     power = 0.8)$n)
   
-  expect_equal(res_bll1$sample_size, n_true1, tol = 2)
+  expect_equal(res_bll1$sample_size, n_true1, tolerance = 2)
 })
 
 test_that("stopping rules of findn work", {

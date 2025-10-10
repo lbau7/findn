@@ -19,7 +19,7 @@ test_that("plot.findn works", {
     max_evals = 3000))
   plot_bll3 <- plot(res_bll2)
   
-  expect_is(plot_bll1, "ggplot")
+  expect_s3_class(plot_bll1, "ggplot")
   expect_gt(max(plot_bll1$data$Lower.CL), 0.95)
   expect_true(all(plot_bll1$data$Upper.CL[which(
     plot_bll1$data$Rating == "Too Low")] < 0.8))
