@@ -28,6 +28,24 @@ See also 'Details'.}
 
 \item{...}{Further arguments.}
 }
+\value{
+\code{findn} returns an object of class \code{findn} which 
+contains the following elements:
+\item{sample_size}{the sample size estimate}
+\item{fit}{the model coefficients and covariance matrix from the last 
+Bayesian probit regression model}
+\item{all_evals}{all evaluated sample sizes}
+\item{targ}{the target power}
+\item{level}{the significance level for the confidence intervals used 
+for the stopping criteria}
+\item{exit.mes}{a message about wheter the stopping criterion was reached
+with the number of simulations given by \code{max_evals}}
+By default, a list containing the point estimate for the sample size, the 
+minimum sufficient sample size (i.e. the smallest sample size for which the
+lower limit of the confidence interval for the estimated power is larger 
+than the target power) and a message whether the stopping criterion was 
+reached is printed.
+}
 \description{
 Displays details about a sample size estimation from a \code{findn} object.
 }
@@ -64,11 +82,11 @@ ttest <- function(mu1 = 0, mu2 = 1, sd, n, k) {
 }
 
 # Create a findn object
-res.ttest <- findn(fun = ttest, targ = 0.8, k = 25, start = 100, 
+res_ttest <- findn(fun = ttest, targ = 0.8, k = 25, start = 100, 
   init_evals = 100, r = 4, stop = "evals", max_evals = 2000, 
   level = 0.05, var_a = 0.05, var_b = 1, alpha = 0.025, 
   alternative = "one.sided", sd = 2, verbose = FALSE)
 
 # print with default settings
-print(res.ttest, details = "low", digits = 3)
+print(res_ttest, details = "low", digits = 3)
 }

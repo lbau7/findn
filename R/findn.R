@@ -68,8 +68,12 @@
 #' \code{"rel_unc"} and the stopping criterion couldn't be satisfied within
 #' \code{max_evals} evaluations.
 #' 
-#' @return \code{findn} returns an object of class "\code{findn}". 
-#'   See also \code{\link{print.findn}}.
+#' @return \code{findn} returns an object of class \code{findn}. By default,
+#' a list containing the point estimate for the sample size, the minimum
+#' sufficient sample size (i.e. the smallest sample size for which the
+#' lower limit of the confidence interval for the estimated power is larger 
+#' than the target power) and a message whether the stopping criterion was 
+#' reached is printed. See \code{\link{print.findn}} for details. 
 #' @export
 #'
 #' @examples
@@ -89,7 +93,7 @@
 #'   return(mean(teststatistic < -crit))
 #' }
 #' 
-#' res_ttest <- findn(fun = ttest, targ = 0.8, k = 25, start = 100, 
+#' findn(fun = ttest, targ = 0.8, k = 25, start = 100, 
 #'   init_evals = 100, r = 4, stop = "evals", max_evals = 2000, 
 #'   level = 0.05, var_a = 1, var_b = 0.1, alpha = 0.025, 
 #'   alternative = "one.sided", verbose = FALSE)

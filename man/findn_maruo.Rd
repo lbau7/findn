@@ -20,14 +20,38 @@ use 10.}
 
 \item{...}{Further optional arguments.}
 }
+\value{
+\code{findn_maruo} returns a list containing the point estimate
+for the sample size and a list of all sample sizes that for which the trial
+function was evaluated.
+}
 \description{
 \code{findn_maruo} estimates the sample size for a certain target function 
 based on repeated simulations using a model based approach proposed by Maruo 
 et al. (2018).
 }
+\examples{
+# Function that simulates the outcomes of a two-sample t-test
+ttest <- function(n, k, mu1 = 0, mu2 = 1, sd = 2) {
+  sample1 <- matrix(rnorm(n = ceiling(n) * k, mean = mu1, sd = sd),
+    ncol = k)
+  mean1 <- apply(sample1, 2, mean)
+  sd1_hat <- apply(sample1, 2, sd)
+  sample2 <- matrix(rnorm(n = ceiling(n) * k, mean = mu2, sd = sd),
+    ncol = k)
+  mean2 <- apply(sample2, 2, mean)
+  sd2_hat <- apply(sample2, 2, sd)
+  sd_hat <- sqrt((sd1_hat^2 + sd2_hat^2) / 2)
+  teststatistic <- (mean1 - mean2) / (sd_hat * sqrt(2 / n))
+  crit <- qt(1 - 0.025, 2 * n - 2)
+  return(mean(teststatistic < -crit))
+}
+
+findn_maruo(fun = ttest, targ = 0.8)
+}
 \references{
 Maruo, K., Tada, K., Ishil, R. and Gosho M. (2018) An
   Efficient Procedure for Calculating Sample Size Through
   Statistical Simulations, Statistics in Biopharmaceutical Research
-  10, 1-8.  \doi{https://doi.org/10.1080/19466315.2017.1349689}
+  10, 1-8.
 }
