@@ -79,9 +79,7 @@ stop_uncertainty <- function(tol, fit, xest, targ, level, type) {
   if (type == "absolute") {
     cond <- length(x.unc) <= tol
   } else if (type == "relative") {
-    if (length(x.unc) == 0) {
-      cond <- TRUE
-    } else {
+    if (length(x.unc) == 0) {cond <- TRUE} else {
       rel.unc <- (x.unc[length(x.unc)] - x.unc[1]) / x.unc[1]
       cond <- rel.unc <= tol
     }
