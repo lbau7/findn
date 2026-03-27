@@ -4,7 +4,7 @@
 #' @param min_n lower limit of the x-axis.
 #' @param max_n upper limit of the x-axis. The default is \code{NULL}.
 #' @param power_lim if \code{max_n} is \code{NULL} then the upper limit of the x-axis is the 
-#' smallest sample size for which the lower limit of the \code{level} percent confidence interval
+#' smallest sample size for which the lower limit of the \code{level} percent credible interval
 #' for the predicted power exceeds the value of \code{power_lim}. The default is 0.95.
 #' @param ... Further arguments.
 #'

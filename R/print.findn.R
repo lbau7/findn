@@ -4,7 +4,7 @@
 #'
 #' @param x Object of class \code{findn}.
 #' @param details Either \code{"low"} (default) or \code{"high"}. See also 'Details'.
-#' @param max_n If \code{details = "high"} the predicted power values and confidence intervals 
+#' @param max_n If \code{details = "high"} the predicted power values and credible intervals 
 #' are shown for all sample sizes from 1 to \code{max_n} if \code{max_n} is non-\code{NULL}. 
 #' See also 'Details'.
 #' @param digits Number of decimal places to be shown.
@@ -12,17 +12,17 @@
 #' @param ... Further arguments.
 #'
 #' @details When \code{details = "low"}, only the point estimate (i.e., the smallest sample 
-#' for which the predicted power exceeds the target power), the "minimum sufficient sample 
-#' size" (i.e., the smallest sample size for which the lower limit of the \code{level}% confidence
+#' for which the predicted power exceeds the target power), the upper bound for the sample
+#' size (i.e., the smallest sample size for which the lower limit of the \code{level}% credible
 #' interval for the predicted power exceeds the target power) and an exit message. The exit 
 #' message shows whether the chosen stopping rule was satisfied. If \code{details = "high"} 
 #' then the default behaviour (i.e. when \code{max_n = NULL}) is to display all sample sizes, 
-#' their predicted power values and the alpha% confidence intervals, for which it is uncertain
+#' their predicted power values and the \level{alpha}% credible intervals, for which it is uncertain
 #' whether their power exceeds the target power, and the three largest sample sizes that 
 #' are smaller than the smallest sample size that is rated uncertain and the three smallest
 #' sample sizes which are greater than the smallest sample size that is rated uncertain.
 #' If \code{details = "high"} and \code{max_n} is non-\code{NULL}, then the sample sizes,
-#' their predicted power values and the confidence intervals for the predicted power values 
+#' their predicted power values and the credible intervals for the predicted power values 
 #' from 1 to \code{max_n} are displayed.
 
 #' @return \code{findn} returns an object of class \code{findn} which 
@@ -32,15 +32,15 @@
 #' Bayesian probit regression model}
 #' \item{all_evals}{all evaluated sample sizes}
 #' \item{targ}{the target power}
-#' \item{level}{the significance level for the confidence intervals used 
+#' \item{level}{the significance level for the credible intervals used 
 #' for the stopping criteria}
 #' \item{exit.mes}{a message about wheter the stopping criterion was reached
 #' with the number of simulations given by \code{max_evals}}
 #
-#' By default, a list containing the point estimate for the sample size, the 
-#' minimum sufficient sample size (i.e. the smallest sample size for which the
-#' lower limit of the confidence interval for the estimated power is larger 
-#' than the target power) and a message whether the stopping criterion was 
+#' By default, a list containing the point estimate for the sample size, an 
+#' upper bound for the sample size based (i.e. the smallest sample size for
+#' which the lower limit of the credibel interval for the estimated power is
+#' larger than the target power) and a message whether the stopping criterion was 
 #' reached is printed.
 #' @export
 #'
@@ -77,7 +77,7 @@ print.findn <- function(x, details = c("low", "high"), max_n = NULL,
   if (details == "low") {
     x_list <- list(
       Point_Estimate_n = x$sample_size,
-      Minimum_Sufficient_n = detail.df,
+      Upper_bound_n = detail.df,
       Message = x$exit.mes
     )
   } else {

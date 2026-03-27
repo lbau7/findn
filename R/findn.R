@@ -15,9 +15,9 @@
 #' @param stop The stopping criterion. One of \code{"evals"}, \code{"power_ci"}, 
 #'   \code{"abs_unc"}, \code{"rel_unc"}.
 #' @template max_evals
-#' @param level Significance level for the confidence intervals if \code{stop} 
+#' @param level Significance level for the credible intervals if \code{stop} 
 #'   is something other than \code{"evals"}. Also used to determine the levels 
-#'   for the confidence intervals that are printed if \code{verbose = TRUE}.
+#'   for the credible intervals that are printed if \code{verbose = TRUE}.
 #' @param power_ci_tol Tolerance parameter if \code{stop = "power_ci"}.
 #' @param abs_unc_tol Tolerance parameter if \code{stop = "abs_unc"}.
 #' @param rel_unc_tol Tolerance parameter if \code{stop is "rel_unc"}.
@@ -29,8 +29,8 @@
 #'   determine the mean of the intercept prior.
 #' @param min_x The minimum sample size that \code{fun} can be evaluated for.
 #' @param verbose If \code{TRUE}, the current sample size estimate, the 
-#'   predicted power and its \code{level} percent confidence is returned after
-#'   every iteration.
+#'   predicted power and its \code{level} percent credible interval are returned
+#'   after every iteration.
 #' @template dotdotdot
 #'
 #' @details \code{findn} estimates the sample size for a target function that 
@@ -53,12 +53,12 @@
 #' There are four different stopping criteria. When \code{stop = "evals"} 
 #' the algorithm stops when the target function was evaluated \code{max_evals}
 #' times. When \code{stop = "power_ci"}the algorithm stops when the \code{level}
-#' percent confidence interval of the predicted power at the current sample 
+#' percent credible interval of the predicted power at the current sample 
 #' size estimate is within the interval \code{targ} plus and minus
 #' \code{power_ci_tol}. When \code{stop = "abs_unc"} the algorithm stops when 
 #' the number of sample sizes in the uncertainty set smaller than
 #' \code{abs_unc_tol}. The uncertainty set is defined as the set that contains 
-#' all sample sizes for which the \code{level} percent confidence interval for
+#' all sample sizes for which the \code{level} percent credible interval for
 #' the predicted power contains \code{targ}. When \code{stop = "rel_unc"} the
 #' algorithm stops when the relative uncertainty range is smaller than
 #' \code{rel_unc_tol}. The relative uncertainty range is defined as the greatest
@@ -71,7 +71,7 @@
 #' @return \code{findn} returns an object of class \code{findn}. By default,
 #' a list containing the point estimate for the sample size, the minimum
 #' sufficient sample size (i.e. the smallest sample size for which the
-#' lower limit of the confidence interval for the estimated power is larger 
+#' lower limit of the credible interval for the estimated power is larger 
 #' than the target power) and a message whether the stopping criterion was 
 #' reached is printed. See \code{\link{print.findn}} for details. 
 #' @export
@@ -206,6 +206,7 @@ findn <- function(fun, targ, start, k = 25, init_evals = 100, r = 4,
         mu_logb = par_logb[1], sd_logb = par_logb[2]
       )
       xest[i+1] <- get_est(fit, ttarg)
+      if (xest[i+1] > 500) browser()
     }
   }
 
