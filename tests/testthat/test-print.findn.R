@@ -14,7 +14,7 @@ test_that("plot.findn works", {
   
   res_bll1 <- suppressWarnings(findn(fun = fun_ttest1, targ = 0.8, start = 100))
   det_bll11 <- print(res_bll1, details = "low", invisible = TRUE)
-  pred_bll <- predict_fit(res_bll1$fit, det_bll11$Minimum_Sufficient_n, 
+  pred_bll <- predict_fit(res_bll1$fit, det_bll11$Upper_bound_n, 
     se = TRUE)
   low_cl <- stats::pnorm(pred_bll$pred - stats::qnorm(1 - (res_bll1$level / 
       2)) * pred_bll$se)
